@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
+<<<<<<< HEAD
 project(multiagent_slave)
+=======
+project(robomaster_interface)
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -10,6 +14,10 @@ project(multiagent_slave)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   rospy
+<<<<<<< HEAD
+=======
+  std_msgs
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 )
 
 ## System dependencies are found with CMake's conventions
@@ -69,7 +77,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
+<<<<<<< HEAD
 #   geometry_msgs
+=======
+#   geometry_msgs#   std_msgs
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 # )
 
 ################################################
@@ -103,8 +115,13 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
+<<<<<<< HEAD
 #  LIBRARIES multiagent_slave
 #  CATKIN_DEPENDS geometry_msgs rospy
+=======
+#  LIBRARIES robomaster_interface
+#  CATKIN_DEPENDS geometry_msgs rospy std_msgs
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 #  DEPENDS system_lib
 )
 
@@ -121,7 +138,11 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
+<<<<<<< HEAD
 #   src/${PROJECT_NAME}/multiagent_slave.cpp
+=======
+#   src/${PROJECT_NAME}/robomaster_interface.cpp
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 # )
 
 ## Add cmake target dependencies of the library
@@ -132,7 +153,11 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+<<<<<<< HEAD
 # add_executable(${PROJECT_NAME}_node src/multiagent_slave_node.cpp)
+=======
+# add_executable(${PROJECT_NAME}_node src/robomaster_interface_node.cpp)
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -196,7 +221,11 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
+<<<<<<< HEAD
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_multiagent_slave.cpp)
+=======
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_robomaster_interface.cpp)
+>>>>>>> 4f0e0f8fcb07632c0b32268d25a3a3b96b6207e0
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
