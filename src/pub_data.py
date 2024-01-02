@@ -42,7 +42,7 @@ class rover:
         self.robo = robot.Robot()
         try:
                 self.robo.initialize(conn_type="rndis")
-                print("robot initialized. use WASD keys to move")
+                print("robot initialized.")
         except:
                 print("robot cant be initialized. check hardware connections")
         self.chass = self.robo.chassis
