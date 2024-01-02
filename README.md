@@ -2,6 +2,11 @@
 _made by me solely_
 
 # How to install 
+## Dependecies
+```
+sudo apt-get install ros-melodic-robot-pose-ekf 
+```
+
 go to your workspace and clone this repo over there
 ```
 cd catkin_ws/src
