@@ -32,8 +32,9 @@ def get_quaternion_from_euler(roll, pitch, yaw):
 
 
 class rover:
-    def __init__(self) -> None:
+    def __init__(self):
         self.imu_pub = rospy.Publisher('imu_data', Imu, queue_size=10)
+        self.robot_name = rospy.get_param('~robot_number')
         # self.pose_pub = rospy.Publisher('pose_data', Point, queue_size=10)
         # self.angle_pub = rospy.Publisher('angle_data', )
         self.odom_pub = rospy.Publisher("odom", Odometry, queue_size=10)
@@ -42,7 +43,7 @@ class rover:
         self.robo = robot.Robot()
         try:
                 self.robo.initialize(conn_type="rndis")
-                print("robot initialized. use WASD keys to move")
+                print("robot initialized")
         except:
                 print("robot cant be initialized. check hardware connections")
         self.chass = self.robo.chassis
@@ -67,7 +68,7 @@ class rover:
         acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z = imu_info
         acc_z=9.8
         sending = Imu()
-        sending.header.frame_id = 'imu'
+        sending.header.frame_id = '{}_imu'.format(self.robot_name)
         sending.header.stamp = rospy.Time.now()
 
 
@@ -142,9 +143,9 @@ class rover:
 
         odom = Odometry()
         odom.header.stamp = rospy.Time.now()
-        odom.header.frame_id = "odom"
+        odom.header.frame_id = "{}_odom".format(self.robot_name)
 
-        odom.child_frame_id = "base_link"
+        odom.child_frame_id = "{}_base_link".format(self.robot_name)
 
         odom.pose.pose=Robot_pose
         odom.pose.covariance=cov

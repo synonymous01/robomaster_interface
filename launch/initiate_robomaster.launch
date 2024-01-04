@@ -3,9 +3,12 @@
 <launch>
 	<arg name="robot_name" default="robot1"/>
 
+	
 	<group ns="$(arg robot_name)">
-		<node name="interfacer" pkg="robomaster_interface" type="pub_data.py" />
 		<include file="$(find rplidar_ros)/launch/rplidar_a2m12.launch"/>
+		<node name="interfacer" pkg="robomaster_interface" type="pub_data.py">
+			<param name="robot_number" type="string" value="$(arg robot_name)"/>
+		</node>
 		<include file="$(find robot_pose_ekf)/robot_pose_ekf.launch" />
 	</group>
 
