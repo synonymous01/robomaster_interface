@@ -9,7 +9,7 @@
 		<node name="interfacer" pkg="robomaster_interface" type="pub_data.py">
 			<param name="robot_number" value="$(arg robot_name)"/>
 		</node>
-		<include file="$(find robomaster_interface)/launch/robomaster_ekf.launch" />
+		<include file="$(find robomaster_interface)/launch/robomaster_ekf.launch">
 			<arg name="robot_name" value="$(arg robot_name)"/>
 		</include>
 		<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0 0 0 0 0 0 $(arg robot_name)_base_link $(arg robot_name)_laser 30" />
