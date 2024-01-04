@@ -96,7 +96,7 @@ class rover:
         self.wz=gyro_z
 
         self.previous_time=self.current_time
-        self.current_time=self.current_time
+        self.current_time=rospy.Time.now()
 
         dt=(self.current_time-self.previous_time).to_sec()
 
