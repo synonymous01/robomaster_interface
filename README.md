@@ -2,12 +2,23 @@
 _made by me solely_
 
 # How to install 
+## Dependecies
+```
+sudo apt-get install ros-melodic-robot-pose-ekf 
+```
+
 go to your workspace and clone this repo over there
 ```
 cd catkin_ws/src
 git clone https://github.com/synonymous01/robomaster_interface.git
 ```
 
+# How to run
+Make sure to configure the robot number in the launch file.
+Then, you can run this by entering:
+```
+roslaunch robomaster_interface initiate_robomaster.launch
+```
 
 
 # Why did I make this?
