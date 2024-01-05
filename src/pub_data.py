@@ -177,7 +177,7 @@ class rover:
     def send_velocities(self, data):
         v = data.linear.x
         omega = data.angular.z
-        omega = omega * (np.pi / 180)
+        omega = omega * (180 / np.pi)
         self.chass.drive_speed(x=v, y=0, z=omega, timeout=5)
 
     def close_robot(self):
