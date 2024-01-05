@@ -74,9 +74,9 @@ class rover:
 
         # converting left hand coords of robomaster to standard ROS right hand coords
         temp1 = acc_x
-        acc_x = acc_y
-        acc_y = acc_z
-        acc_z = -1 * temp1
+        acc_x = -1* acc_z
+        acc_y = -1 * temp1
+        acc_z = acc_y
 
         gyro_x = 0.0
         gyro_y = 0.0
@@ -116,9 +116,9 @@ class rover:
     def update_pose(self, pose_info):
         x, y, z = pose_info
         pos = Point()
-        pos.x = y
-        pos.y = z
-        pos.z = -1 * x
+        pos.x = -1 * z
+        pos.y = -1 * x
+        pos.z = y
 
 
         angles = get_quaternion_from_euler(self.roll, self.pitch, self.yaw)
