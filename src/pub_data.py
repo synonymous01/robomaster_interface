@@ -72,8 +72,8 @@ class rover:
         sending.header.stamp = rospy.Time.now()
 
 
-        gyro_x = gyro_x * (np.pi / 180)
-        gyro_y = gyro_y * (np.pi / 180)
+        gyro_x = 0.0
+        gyro_y = 0.0
         gyro_z = gyro_z * (np.pi/180)
         sending.linear_acceleration.x = acc_x
         sending.linear_acceleration.y = acc_y
@@ -166,8 +166,8 @@ class rover:
     def update_angles(self, angle_info):
         y, p, r = angle_info
         self.yaw = y * (np.pi/ 180)
-        self.pitch = p * (np.pi/180)
-        self.roll = r * (np.pi/180)
+        self.pitch = 0.0 #p * (np.pi/180)
+        self.roll = 0.0 #r * (np.pi/180)
 
     def send_velocities(self, data):
         v = data.linear.x
