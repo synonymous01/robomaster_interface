@@ -165,7 +165,7 @@ class rover:
 
     def update_angles(self, angle_info):
         y, p, r = angle_info
-        self.yaw = y * (np.pi/ 180)
+        self.yaw = y * -1 * (np.pi/ 180)
         self.pitch = 0.0 #p * (np.pi/180)
         self.roll = 0.0 #r * (np.pi/180)
 
