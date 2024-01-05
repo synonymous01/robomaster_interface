@@ -72,6 +72,12 @@ class rover:
         sending.header.stamp = rospy.Time.now()
 
 
+        # converting left hand coords of robomaster to standard ROS right hand coords
+        temp1 = acc_x
+        acc_x = acc_y
+        acc_y = acc_z
+        acc_z = -1 * temp1
+
         gyro_x = 0.0
         gyro_y = 0.0
         gyro_z = gyro_z * -1* (np.pi/180)
