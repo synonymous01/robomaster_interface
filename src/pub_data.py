@@ -126,7 +126,7 @@ class rover:
         self.orientation.z = angles[2]
         self.orientation.w = angles[3]
 
-        cov= 0.5*np.identity(6)
+        cov= 0.1*np.identity(6)
         cov=cov.flatten()
 
 
