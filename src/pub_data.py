@@ -80,9 +80,9 @@ class rover:
         gyro_x = 0.0
         gyro_y = 0.0
         gyro_z = gyro_z * -1* (np.pi/180)
-        sending.linear_acceleration.x = acc_y
-        sending.linear_acceleration.y = acc_z
-        sending.linear_acceleration.z = -1 * acc_x
+        sending.linear_acceleration.x = acc_x
+        sending.linear_acceleration.y = acc_y
+        sending.linear_acceleration.z = acc_z
         sending.angular_velocity.x = gyro_x
         sending.angular_velocity.y = gyro_y
         sending.angular_velocity.z = gyro_z
