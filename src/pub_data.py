@@ -175,10 +175,11 @@ class rover:
         self.roll = 0.0 #r * (np.pi/180)
 
     def send_velocities(self, data):
-        v = data.linear.x
+        vx = data.linear.x
+        vy = data.linear.y
         omega = data.angular.z
         omega = omega * (180 / np.pi)
-        self.chass.drive_speed(x=v, y=0, z=omega, timeout=5)
+        self.chass.drive_speed(x=vx, y=vy, z=omega, timeout=5)
 
     def close_robot(self):
         print("Closing RoboMaster robot.")
