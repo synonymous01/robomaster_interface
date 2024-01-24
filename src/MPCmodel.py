@@ -529,7 +529,7 @@ Aest = np.zeros((num_games,ns));
 rospy.init_node('defender', anonymous=True)
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
-pub = rospy.Publisher(f'{robot_name}/goal_sector', Int16, queue_size=10)
+pub = rospy.Publisher('{}/goal_sector'.format(robot_name), Int16, queue_size=10)
 
 
 while not rospy.is_shutdown():

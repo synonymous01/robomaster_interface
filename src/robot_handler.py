@@ -54,7 +54,7 @@ class handler:
         listener = tf2_ros.TransformListener(tfbuffer)
 
         rate = rospy.Rate(10)
-        trans = tfbuffer.lookup_transform('{}_odom_combined', 'world', rospy.Time())
+        trans = tfbuffer.lookup_transform('{}_odom_combined'.format(self.name), 'world', rospy.Time())
 
         K = [1.5, 1.5]
         u = [0.0, 0.0]
@@ -63,7 +63,7 @@ class handler:
         while not goal_reached:
             goal_x, goal_y = get_goal_pose(self.goal_sector)
             try:
-                trans = tfbuffer.lookup_transform("{}_odom_combined", "world", rospy.Time())
+                trans = tfbuffer.lookup_transform("{}_odom_combined".format(self.name), "world", rospy.Time())
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rate.sleep()
                 continue
