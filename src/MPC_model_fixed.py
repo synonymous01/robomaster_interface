@@ -396,6 +396,7 @@ robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('{}/goal_sector'.format(robot_name), Int16, queue_size=1)
 
+prev_sector = 0
 while not rospy.is_shutdown():
 
     for g in range(num_games):
