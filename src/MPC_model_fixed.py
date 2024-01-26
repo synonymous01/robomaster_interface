@@ -434,7 +434,9 @@ while not rospy.is_shutdown():
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
             controls = np.where(uf[:, t])
-            next_sector = 0
+            next_sector = -1
+
+            rospy.loginfo("controls: {}".format(controls))
 
             for control in controls:
                 prev_sector = math.floor(control[0] / (ns - 1)) + 1
