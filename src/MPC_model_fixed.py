@@ -437,6 +437,8 @@ while not rospy.is_shutdown():
             next_sector = -1
 
             rospy.loginfo("controls: {}".format(controls))
+            rospy.loginfo("xf: {}".format(xf[:,t]))
+            rospy.loginfo("uf: {}".format(uf[:,t]))
 
             for control in controls:
                 prev_sector = math.floor(control[0] / (ns - 1)) + 1
