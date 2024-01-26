@@ -12,9 +12,9 @@ n_rows = 4
 class handler:
     def __init__(self, no, init_x = 0, init_y = 0):
         self.name = "robot{}".format(no)
-        rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.update_pose)
-        rospy.Subscriber("/goal_sector", Int16, self.update_goal_sector)
-        self.pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+        rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
+        rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
+        self.pub = rospy.Publisher("/{}/cmd_vel".format(self.name), Twist, queue_size=10)
         self.goal_sector = -1
         self.init_x = init_x
         self.init_y = init_y
@@ -87,6 +87,7 @@ class handler:
 
 
 rospy.init_node('handler')
+print('testing!')
 robot_name = rospy.get_param('~robot_number')
 init_x = rospy.get_param('~initial_x')
 init_y = rospy.get_param('~initial_y')
