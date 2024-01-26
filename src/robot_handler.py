@@ -92,7 +92,7 @@ robot_name = rospy.get_param('~robot_number')
 init_x = rospy.get_param('~initial_x')
 init_y = rospy.get_param('~initial_y')
 robot_number = int(robot_name[-1])
-robot_handler = handler(robot_number, int(init_x), int(init_y))
+robot_handler = handler(robot_number, float(init_x), float(init_y))
 
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
