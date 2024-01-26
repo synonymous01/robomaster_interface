@@ -333,7 +333,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
 
     out1 = np.zeros((len(f), 1))
 
-    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, bounds = [0,1], method = 'highs', options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
     optimize1 = out1.x
 
     for l in range(Tp):
