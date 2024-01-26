@@ -73,7 +73,7 @@ class handler:
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
             err_x = curr_x - goal_x
-            err_y = curr_x - goal_y
+            err_y = curr_y - goal_y
             u[0] = -K[0] * err_x
             u[1] = -K[1] * err_y
             vx = u[0]
