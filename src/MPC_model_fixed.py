@@ -447,7 +447,7 @@ while not rospy.is_shutdown():
                     else:
                         next_sector = offset + 1
                         break
-
+            rospy.loginfo("sending to sector : {}".format(next_sector))
             pub.publish(next_sector)
 
             t = t + 1
