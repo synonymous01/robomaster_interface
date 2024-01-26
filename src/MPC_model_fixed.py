@@ -440,7 +440,7 @@ while not rospy.is_shutdown():
                 prev_sector = math.floor(control[0] / (ns - 1)) + 1
 
                 if prev_sector == robot_sectors[robot_number]:
-                    offset = control % (ns - 1)
+                    offset = control[0] % (ns - 1)
                     if offset >= prev_sector:   
                         next_sector = offset + 2
                         break
