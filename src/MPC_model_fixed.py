@@ -394,7 +394,7 @@ Aest = np.zeros((num_games, ns))
 rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
-pub = rospy.Publisher('{}/goal_sector'.format(robot_name), Int16, queue_size=1)
+pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
 
 # prev_sector = 0
 while not rospy.is_shutdown():
@@ -423,7 +423,7 @@ while not rospy.is_shutdown():
         tau_diff_e = 0.1
 
         while t < T:
-            rospy.Subscriber("sectors", Int32MultiArray, callback)
+            rospy.Subscriber("/sectors", Int32MultiArray, callback)
 
             xe[robot_sectors[0] - 1, t - 1] = 1
             xf[robot_sectors[1] - 1, t - 1] = 1
