@@ -396,7 +396,7 @@ robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('{}/goal_sector'.format(robot_name), Int16, queue_size=1)
 
-prev_sector = 0
+# prev_sector = 0
 while not rospy.is_shutdown():
 
     for g in range(num_games):
@@ -437,11 +437,11 @@ while not rospy.is_shutdown():
             next_sector = 0
 
             for control in controls:
-                prev_sector = math.floor(control / (ns - 1)) + 1
+                prev_sector = math.floor(control[0] / (ns - 1)) + 1
 
                 if prev_sector == robot_sectors[robot_number]:
                     offset = control % (ns - 1)
-                    if offset >= prev_sector:
+                    if offset >= prev_sector:   
                         next_sector = offset + 2
                         break
                     else:
