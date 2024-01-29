@@ -434,6 +434,7 @@ while not rospy.is_shutdown():
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
             controls = np.nonzero(uf[:, t])
+            controls = controls[0]
             next_sector = -1
 
             rospy.loginfo("controls: {}".format(controls))
@@ -441,10 +442,10 @@ while not rospy.is_shutdown():
             rospy.loginfo("uf: {}".format(uf[:,t]))
 
             for control in controls:
-                prev_sector = math.floor(control[0] / (ns - 1)) + 1
+                prev_sector = math.floor(control / (ns - 1)) + 1
 
                 if prev_sector == robot_sectors[robot_number]:
-                    offset = control[0] % (ns - 1)
+                    offset = control % (ns - 1)
                     if offset >= prev_sector:   
                         next_sector = offset + 2
                         break
