@@ -101,7 +101,7 @@ def Bmatrix(nrows, ncols):
         Bin[i, ind_st:ind_end] = brow
 
     for i in range(0, ns):
-        neigh = np.where(Bnew[i,:] != 0)
+        neigh = np.where(Bnew[i,:])
 
         for elements in neigh:
             elements = elements + 1
@@ -148,7 +148,7 @@ def distance(dest_array, neigh_e, nrows, ncols):
     ys = ys + 1
     xs = xs + 1
 
-    sectors = np.where(dest_array != 0)
+    sectors = np.where(dest_array)
 
     len_sec = len(sectors[0])
     dist = np.zeros(len_sec, dtype=int)
@@ -191,12 +191,12 @@ def Diffusionmatrix(x_source, x_dest, nrows, ncols, neigh, tau_diff):
 
     ns = nrows * ncols
     G_diff = np.zeros((ns * (ns - 1), ns))
-    loc_source = np.where(x_source != 0)
+    loc_source = np.where(x_source)
     loc_source = loc_source[0]
 
     for sector in loc_source:
         neigh_row = neigh[sector, :]
-        neigh_s = np.where(neigh_row == 1)
+        neigh_s = np.where(neigh_row == 1, range(len(neigh_row)))
         neigh_s = neigh_s[0]
         dist = np.zeros(len(neigh_s))
         for n in range(len(neigh_s)):
@@ -291,7 +291,7 @@ def DynamicConstraints(Bin, Bout, Tp, ns):
 
 def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     Bin, Bout, neigh = Bmatrix(nrows, ncols)
-    loc_xf = np.where(xf != 0)
+    loc_xf = np.where(xf)
 
     for defender in loc_xf:
         n = neigh[defender, :]
@@ -417,7 +417,7 @@ while not rospy.is_shutdown():
         xref[1, 0] = 1
         xref[2, 0] = 1
         xref[3, 0] = 1
-        xref[4, 0] = 1
+        # xref[4, 0] = 1
 
         t = 1
         tau_diff_e = 0.1
