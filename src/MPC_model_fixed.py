@@ -174,7 +174,7 @@ def pdfgen(pmf):
     for k in range(1,N):
         F[k] = F[k - 1] + pmf[k]
     b = random.random()
-    ind = np.where(F >= b)
+    ind = np.where(F >= b, range(N))
     out = ind[0]
     return out
 
