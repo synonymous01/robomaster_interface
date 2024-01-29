@@ -101,7 +101,7 @@ def Bmatrix(nrows, ncols):
         Bin[i, ind_st:ind_end] = brow
 
     for i in range(0, ns):
-        neigh = np.where(Bnew[i,:])
+        neigh = np.nonzero(Bnew[i,:])
 
         for elements in neigh:
             elements = elements + 1
@@ -148,7 +148,7 @@ def distance(dest_array, neigh_e, nrows, ncols):
     ys = ys + 1
     xs = xs + 1
 
-    sectors = np.where(dest_array)
+    sectors = np.nonzero(dest_array)
 
     len_sec = len(sectors[0])
     dist = np.zeros(len_sec, dtype=int)
@@ -174,7 +174,7 @@ def pdfgen(pmf):
     for k in range(1,N):
         F[k] = F[k - 1] + pmf[k]
     b = random.random()
-    ind = np.where(F >= b, range(N))
+    ind = np.asarray(F >= b).nonzero()
     out = ind[0]
     return out
 
@@ -191,12 +191,12 @@ def Diffusionmatrix(x_source, x_dest, nrows, ncols, neigh, tau_diff):
 
     ns = nrows * ncols
     G_diff = np.zeros((ns * (ns - 1), ns))
-    loc_source = np.where(x_source)
+    loc_source = np.nonzero(x_source)
     loc_source = loc_source[0]
 
     for sector in loc_source:
         neigh_row = neigh[sector, :]
-        neigh_s = np.where(neigh_row == 1, range(len(neigh_row)))
+        neigh_s = np.asarray(neigh_row == 1).nonzero()
         neigh_s = neigh_s[0]
         dist = np.zeros(len(neigh_s))
         for n in range(len(neigh_s)):
@@ -291,7 +291,7 @@ def DynamicConstraints(Bin, Bout, Tp, ns):
 
 def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     Bin, Bout, neigh = Bmatrix(nrows, ncols)
-    loc_xf = np.where(xf)
+    loc_xf = np.nonzero(xf)
 
     for defender in loc_xf:
         n = neigh[defender, :]
@@ -433,7 +433,7 @@ while not rospy.is_shutdown():
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
-            controls = np.where(uf[:, t])
+            controls = np.nonzero(uf[:, t])
             next_sector = -1
 
             rospy.loginfo("controls: {}".format(controls))
