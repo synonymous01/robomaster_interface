@@ -368,7 +368,7 @@ ncols = 4
 meter_per_sector_length = 1
 
 T = 30
-Tp = 3
+Tp = 5
 
 ns = nrows * ncols
 
@@ -403,8 +403,8 @@ robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
 path = os.path.abspath("")
 
-A = np.load("{}/A.npy".format(path))
-Aeq = np.load("{}/Aeq.npy".format(path))
+A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
+Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 
 # prev_sector = 0
 while not rospy.is_shutdown():
