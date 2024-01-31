@@ -368,7 +368,7 @@ ncols = 4
 meter_per_sector_length = 1
 
 T = 30
-Tp = 5
+Tp = 3
 
 ns = nrows * ncols
 
@@ -384,9 +384,6 @@ round = 0
 B = Bin - Bout
 
 Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
-## grabbing Aeq from MATLAB since this one isnt correct
-# A = np.load("./A.npy")
-# Aeq = np.load("./Aeq.npy")
 
 
 
@@ -401,8 +398,9 @@ rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
-# path = os.path.abspath("")
 
+
+# path = os.path.abspath("")
 # A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
 # Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 
