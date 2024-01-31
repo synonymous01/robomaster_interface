@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import numpy as np
 import scipy.optimize as opt
@@ -6,7 +6,7 @@ import numpy.matlib
 import math
 import random
 from std_msgs.msg import Int32MultiArray, Int16
-
+import os
 
 ## B matrix
 def shaping(temp, B, ns):
@@ -333,7 +333,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
 
     out1 = np.zeros((len(f), 1))
 
-    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
     optimize1 = out1.x
 
     for l in range(Tp):
@@ -380,11 +380,17 @@ alphaf = 0.9; betaf = 1-alphaf
 round = 0
 
 [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
-B = Bin - Bout
+# B = Bin - Bout
 
-Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+# Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 
-A = FlowConstraints(Bin, Bout, Tp, ns)
+# A = FlowConstraints(Bin, Bout, Tp, ns)
+
+path = os.path.abspath("")
+
+B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
+A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
+Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
 cost = np.zeros((1, num_games))
