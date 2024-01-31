@@ -354,7 +354,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-robot_sectors = [0,0,0,0]
+robot_sectors = [13,1,2,3]
 
 def callback(data):
     global robot_sectors
