@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 import numpy as np
 import scipy.optimize as opt
@@ -6,7 +6,6 @@ import numpy.matlib
 import math
 import random
 from std_msgs.msg import Int32MultiArray, Int16
-import os
 
 
 ## B matrix
@@ -355,7 +354,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-robot_sectors = [13,1,2,3]
+robot_sectors = [0,0,0,0]
 
 def callback(data):
     global robot_sectors
@@ -385,8 +384,6 @@ B = Bin - Bout
 
 Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 
-
-
 A = FlowConstraints(Bin, Bout, Tp, ns)
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
@@ -398,11 +395,6 @@ rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
-
-
-# path = os.path.abspath("")
-# A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
-# Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 
 # prev_sector = 0
 while not rospy.is_shutdown():
@@ -437,7 +429,7 @@ while not rospy.is_shutdown():
             xf[robot_sectors[1] - 1, t - 1] = 1
             xf[robot_sectors[2] - 1, t - 1] = 1
             xf[robot_sectors[3] - 1, t - 1] = 1
-            rospy.loginfo("xf[t-1]: {}".format(xf[:, t-1]))
+
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
