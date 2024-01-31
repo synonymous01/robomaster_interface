@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import numpy as np
 import scipy.optimize as opt
@@ -385,10 +385,10 @@ B = Bin - Bout
 
 # Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 ## grabbing Aeq from MATLAB since this one isnt correct
-with open('Aeq.pkl','rb') as fin:
+with open('~/catkin_ws/src/robomaster_interface/src/Aeq.pkl','rb') as fin:
     Aeq = pickle.load(fin)
 
-with open('A.pkl','rb') as fin:
+with open('~/catkin_ws/src/robomaster_interface/src/A.pkl','rb') as fin:
     A = pickle.load(fin)
 
 
