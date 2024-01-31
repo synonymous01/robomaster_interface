@@ -385,11 +385,9 @@ B = Bin - Bout
 
 # Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 ## grabbing Aeq from MATLAB since this one isnt correct
-with open('/catkin_ws/src/robomaster_interface/src/Aeq.pkl','rb') as fin:
-    Aeq = pickle.load(fin)
+# A = np.load("./A.npy")
+# Aeq = np.load("./Aeq.npy")
 
-with open('~/catkin_ws/src/robomaster_interface/src/A.pkl','rb') as fin:
-    A = pickle.load(fin)
 
 
 # A = FlowConstraints(Bin, Bout, Tp, ns)
@@ -403,6 +401,10 @@ rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
+path = rospy.get_param('~filepath')
+
+A = np.load("{}/A.npy".format(path))
+Aeq = np.load("{}/Aeq.npy".format(path))
 
 # prev_sector = 0
 while not rospy.is_shutdown():

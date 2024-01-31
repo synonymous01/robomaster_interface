@@ -1,4 +1,3 @@
-import os
+import numpy as np
 
-print('file name: {}'.format(os.path.basename(__file__)))
-print('directory name: {}'.format(os.path.dirname(__file__)))
+aeq = np.load('/home/ibrahim/catkin_ws/src/robomaster_interface/src/A.npy')
