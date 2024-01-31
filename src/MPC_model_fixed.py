@@ -6,7 +6,7 @@ import numpy.matlib
 import math
 import random
 from std_msgs.msg import Int32MultiArray, Int16
-import pickle
+import os
 
 
 ## B matrix
@@ -401,7 +401,7 @@ rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
-path = rospy.get_param('~filepath')
+path = os.path.abspath("")
 
 A = np.load("{}/A.npy".format(path))
 Aeq = np.load("{}/Aeq.npy".format(path))
