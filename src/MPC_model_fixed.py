@@ -355,7 +355,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-robot_sectors = [0,0,0,0]
+robot_sectors = [13,1,2,3]
 
 def callback(data):
     global robot_sectors
@@ -383,14 +383,14 @@ round = 0
 [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
 B = Bin - Bout
 
-# Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 ## grabbing Aeq from MATLAB since this one isnt correct
 # A = np.load("./A.npy")
 # Aeq = np.load("./Aeq.npy")
 
 
 
-# A = FlowConstraints(Bin, Bout, Tp, ns)
+A = FlowConstraints(Bin, Bout, Tp, ns)
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
 cost = np.zeros((1, num_games))
@@ -401,10 +401,10 @@ rospy.init_node('defender')
 robot_name = rospy.get_param('~robot_number')
 robot_number = int(robot_name[-1])
 pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
-path = os.path.abspath("")
+# path = os.path.abspath("")
 
-A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
-Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
+# A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
+# Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 
 # prev_sector = 0
 while not rospy.is_shutdown():
