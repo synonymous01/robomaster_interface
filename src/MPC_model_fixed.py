@@ -344,7 +344,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     Xf[:, 0] = ee1[:, 0]
 
     for l in range(Tp):
-        ind_st_uf = (l - 1) * (ns * (ns - 1)) + Tp * ns + 1
+        ind_st_uf = (l) * (ns * (ns - 1)) + Tp * ns + 1
         ind_end_uf = ind_st_uf + (ns * (ns - 1)) - 1
         ee2[:, l] = optimize1[ind_st_uf - 1 : ind_end_uf]
 
