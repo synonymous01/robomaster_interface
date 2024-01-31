@@ -385,7 +385,7 @@ B = Bin - Bout
 
 # Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 ## grabbing Aeq from MATLAB since this one isnt correct
-with open('~/catkin_ws/src/robomaster_interface/src/Aeq.pkl','rb') as fin:
+with open('/catkin_ws/src/robomaster_interface/src/Aeq.pkl','rb') as fin:
     Aeq = pickle.load(fin)
 
 with open('~/catkin_ws/src/robomaster_interface/src/A.pkl','rb') as fin:
