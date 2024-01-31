@@ -337,18 +337,18 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     optimize1 = out1.x
 
     for l in range(Tp):
-        ind_st_xf = (l) * ns + 1
+        ind_st_xf = (l - 1) * ns + 1
         ind_end_xf = ind_st_xf + ns - 1
         ee1[:, l] = optimize1[ind_st_xf - 1: ind_end_xf]
 
-    Xf[:, 0] = ee1[:, 2]
+    Xf[:, 0] = ee1[:, 0]
 
     for l in range(Tp):
-        ind_st_uf = l * (ns * (ns - 1)) + Tp * ns + 1
+        ind_st_uf = (l - 1) * (ns * (ns - 1)) + Tp * ns + 1
         ind_end_uf = ind_st_uf + (ns * (ns - 1)) - 1
         ee2[:, l] = optimize1[ind_st_uf - 1 : ind_end_uf]
 
-    Uf[:, 0] = ee2[:,2]
+    Uf[:, 0] = ee2[:,0]
 
     out_xf = Xf[:, 0]
     out_uf = Uf[:, 0]
@@ -437,7 +437,7 @@ while not rospy.is_shutdown():
             xf[robot_sectors[3] - 1, t - 1] = 1
 
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
-            xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
+            _, uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
             controls = np.nonzero(uf[:, t])
             controls = controls[0]
