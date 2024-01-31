@@ -436,6 +436,7 @@ while not rospy.is_shutdown():
             controls = np.nonzero(uf[:, t])
             controls = controls[0]
             next_sector = -1
+            rospy.loginfo("B @ uf: {}".format(B @ uf[:,t]))
 
             rospy.loginfo("controls: {}".format(controls))
             rospy.loginfo("xf: {}".format(xf[:,t]))
