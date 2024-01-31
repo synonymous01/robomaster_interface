@@ -6,6 +6,7 @@ import numpy.matlib
 import math
 import random
 from std_msgs.msg import Int32MultiArray, Int16
+import pickle
 
 
 ## B matrix
@@ -382,9 +383,16 @@ round = 0
 [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
 B = Bin - Bout
 
-Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+# Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+## grabbing Aeq from MATLAB since this one isnt correct
+with open('Aeq.pkl','rb') as fin:
+    Aeq = pickle.load(fin)
 
-A = FlowConstraints(Bin, Bout, Tp, ns)
+with open('A.pkl','rb') as fin:
+    A = pickle.load(fin)
+
+
+# A = FlowConstraints(Bin, Bout, Tp, ns)
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
 cost = np.zeros((1, num_games))
