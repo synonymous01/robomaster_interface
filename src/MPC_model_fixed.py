@@ -437,7 +437,7 @@ while not rospy.is_shutdown():
             xf[robot_sectors[1] - 1, t - 1] = 1
             xf[robot_sectors[2] - 1, t - 1] = 1
             xf[robot_sectors[3] - 1, t - 1] = 1
-
+            rospy.loginfo("xf[t-1]: {}".format(xf[:, t-1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
