@@ -449,16 +449,14 @@ while not rospy.is_shutdown():
             rospy.loginfo("uf: {}".format(uf[:,t]))
 
             for control in controls:
-                prev_sector = math.floor(control / (ns - 1)) + 1
-
+                next_sector = math.floor(control / (ns - 1)) + 1
+                offset = control % (ns - 1)
+                if offset >= next_sector:
+                    prev_sector = offset + 2
+                else:
+                    prev_sector = offset + 1
                 if prev_sector == robot_sectors[robot_number]:
-                    offset = control % (ns - 1)
-                    if offset >= prev_sector:   
-                        next_sector = offset + 2
-                        break
-                    else:
-                        next_sector = offset + 1
-                        break
+                    break
             rospy.loginfo("sending to sector : {}".format(next_sector))
             pub.publish(next_sector)
 

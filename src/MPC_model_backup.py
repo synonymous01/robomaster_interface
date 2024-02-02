@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-import rospy
+# import rospy
 import numpy as np
 import scipy.optimize as opt
 import numpy.matlib
 import math
 import random
-from std_msgs.msg import Int32MultiArray, Int16
+# from std_msgs.msg import Int32MultiArray, Int16
 import os
 
 ## B matrix
@@ -335,6 +335,8 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
 
     out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
     optimize1 = out1.x
+    print("status of optimization: {}".format(out1.status))
+    # np.savetxt("optimized_first_step.csv", optimize1)
 
     for l in range(Tp):
         ind_st_xf = (l) * ns + 1
@@ -380,16 +382,20 @@ alphaf = 0.9; betaf = 1-alphaf
 round = 0
 
 [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
-# B = Bin - Bout
-# Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+B = Bin - Bout
+Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 
-# A = FlowConstraints(Bin, Bout, Tp, ns)
+A = FlowConstraints(Bin, Bout, Tp, ns)
 
 path = os.path.abspath("")
 
-B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
-A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
-Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
+# B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
+# A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
+# Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
+# B = np.load("B.npy")
+# A = np.load("A.npy")
+# Aeq = np.load("Aeq.npy")
+
 
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
@@ -462,5 +468,16 @@ while True: #not rospy.is_shutdown():
             #             break
             # rospy.loginfo("sending to sector : {}".format(next_sector))
             # pub.publish(next_sector)
+
+            for control in controls:
+                next_sector = math.floor(control / (ns - 1)) + 1
+                offset = control % (ns - 1)
+                if offset >= next_sector:
+                    prev_sector = offset + 2
+                    # break
+                else:
+                    prev_sector = offset + 1
+                    # break
+                print("robot at sector {} will go to sector {}.".format(prev_sector, next_sector))
 
             t = t + 1
