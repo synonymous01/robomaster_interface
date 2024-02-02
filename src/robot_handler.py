@@ -43,19 +43,19 @@ class handler:
 
 
     def send_to_sector(self):
-        def get_goal_pose(sector):
+        def get_goal_pose():
             x = ((self.goal_sector - 1) % n_cols) + 0.5
             y = (floor((self.goal_sector - 1) / n_cols)) + 0.5
             return x, y
         
-        goal_x, goal_y = get_goal_pose(self.goal_sector)
+        goal_x, goal_y = get_goal_pose()
         # self.go_to_goal(x, y)
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
 
         rate = rospy.Rate(10)
         try:
-            trans = tfbuffer.lookup_transform('{}_odom_combined'.format(self.name), 'world', rospy.Time())
+            trans = tfbuffer.lookup_transform('world', '{}_odom_combined'.format(self.name), rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             pass
         K = [1.5, 1.5]
@@ -63,7 +63,7 @@ class handler:
         goal_reached = False
         v_max = 0.3
         while not goal_reached:
-            goal_x, goal_y = get_goal_pose(self.goal_sector)
+            goal_x, goal_y = get_goal_pose()
             try:
                 trans = tfbuffer.lookup_transform("world", "{}_odom_combined".format(self.name), rospy.Time())
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -73,8 +73,8 @@ class handler:
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
             rospy.loginfo("currx: {}, curry: {}".format(curr_x, curr_y))
-            err_x = curr_x - goal_x
-            err_y = curr_y - goal_y
+            err_x = goal_x - curr_x
+            err_y = goal_y - curr_y
             u[0] = -K[0] * err_x
             u[1] = -K[1] * err_y
             vx = u[0]
@@ -99,5 +99,5 @@ robot_handler = handler(robot_number, float(init_x), float(init_y))
 
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
-        # robot_handler.send_to_sector()
-        pass
+        robot_handler.send_to_sector()
+        # pass
