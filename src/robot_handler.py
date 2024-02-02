@@ -65,7 +65,7 @@ class handler:
         while not goal_reached:
             goal_x, goal_y = get_goal_pose(self.goal_sector)
             try:
-                trans = tfbuffer.lookup_transform("{}_odom_combined".format(self.name), "world", rospy.Time())
+                trans = tfbuffer.lookup_transform("world", "{}_odom_combined".format(self.name), rospy.Time())
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rate.sleep()
                 continue

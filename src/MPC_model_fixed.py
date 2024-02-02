@@ -447,7 +447,7 @@ while not rospy.is_shutdown():
             rospy.loginfo("B @ uf: {}".format(np.matmul(B,uf[:,t])))
 
             rospy.loginfo("controls: {}".format(controls))
-            rospy.loginfo("xf: {}".format(xf[:,t]))
+            # rospy.loginfo("xf: {}".format(xf[:,t]))
             rospy.loginfo("uf: {}".format(uf[:,t]))
 
             for control in controls:
