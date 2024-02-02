@@ -72,6 +72,7 @@ class handler:
 
             curr_x = -1 * trans.transform.translation.x
             curr_y = -1 * trans.transform.translation.y
+            rospy.loginfo("currx: {}, curry: {}".format(curr_x, curr_y))
             err_x = curr_x - goal_x
             err_y = curr_y - goal_y
             u[0] = -K[0] * err_x
