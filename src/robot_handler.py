@@ -86,7 +86,7 @@ class handler:
                 vy = np.sign(vy) * v_max
 
             self.send_velocities(vx, vy)
-            goal_reached = (0.1 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
+            goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
 
 rospy.init_node('handler')
