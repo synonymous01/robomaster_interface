@@ -58,7 +58,7 @@ class handler:
             trans = tfbuffer.lookup_transform('world', '{}_odom_combined'.format(self.name), rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             pass
-        K = [1.5, 1.5]
+        K = [1, 1]
         u = [0.0, 0.0]
         goal_reached = False
         v_max = 0.3
