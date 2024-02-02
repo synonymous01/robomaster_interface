@@ -100,4 +100,3 @@ robot_handler = handler(robot_number, float(init_x), float(init_y))
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
         robot_handler.send_to_sector()
-        # pass
