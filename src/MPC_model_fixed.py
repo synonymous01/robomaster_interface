@@ -457,9 +457,11 @@ while not rospy.is_shutdown():
                     prev_sector = offset + 2
                 else:
                     prev_sector = offset + 1
+
                 if prev_sector == robot_sectors[robot_number]:
+                    rospy.loginfo("sending to sector : {}".format(next_sector))
+                    pub.publish(next_sector)
                     break
-            rospy.loginfo("sending to sector : {}".format(next_sector))
-            pub.publish(next_sector)
+            
 
             t = t + 1
