@@ -75,7 +75,7 @@ class handler:
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
-            u[0] = -K[0] * err_x
+            u[0] = K[0] * err_x
             u[1] = -K[1] * err_y
             vx = u[0]
             vy = u[1]
