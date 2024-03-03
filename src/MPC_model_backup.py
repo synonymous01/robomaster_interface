@@ -7,7 +7,7 @@ import math
 import random
 # from std_msgs.msg import Int32MultiArray, Int16
 import os
-
+import time
 ## B matrix
 def shaping(temp, B, ns):
     for k in range(0, ns):
@@ -332,8 +332,11 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     UB = UB[0]
 
     out1 = np.zeros((len(f), 1))
-
-    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    start = time.time()
+    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="highs", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    # out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    end = time.time()
+    print("time taken: {} seconds".format(end - start))
     optimize1 = out1.x
     print("status of optimization: {}".format(out1.status))
     # np.savetxt("optimized_first_step.csv", optimize1)
@@ -382,19 +385,19 @@ alphaf = 0.9; betaf = 1-alphaf
 round = 0
 
 [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
-B = Bin - Bout
-Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
+# B = Bin - Bout
+# Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
 
-A = FlowConstraints(Bin, Bout, Tp, ns)
+# A = FlowConstraints(Bin, Bout, Tp, ns)
 
 path = os.path.abspath("")
 
 # B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
 # A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
 # Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
-# B = np.load("B.npy")
-# A = np.load("A.npy")
-# Aeq = np.load("Aeq.npy")
+B = np.load("B.npy")
+A = np.load("A.npy")
+Aeq = np.load("Aeq.npy")
 
 
 num_games = 20; num_lost = 0; num_won = 0
