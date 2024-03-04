@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!../venvs/robot_env/bin/python3.7
+from timeit import default_timer as timer
 import rospy
 import numpy as np
 import scipy.optimize as opt
@@ -332,8 +333,10 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     UB = UB[0]
 
     out1 = np.zeros((len(f), 1))
-
-    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    start = timer()
+    out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="highs", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
+    end = timer()
+    rospy.loginfo("seconds taken to calculate: {}".format(end - start))
     optimize1 = out1.x
 
     for l in range(Tp):
@@ -362,9 +365,9 @@ def callback(data):
     robot_sectors = temp
 
 
-nrows = 8
-ncols = 8
-meter_per_sector_length = 0.5
+nrows = 4
+ncols = 4
+meter_per_sector_length = 1
 
 T = 30
 Tp = 3
@@ -386,11 +389,18 @@ round = 0
 
 # A = FlowConstraints(Bin, Bout, Tp, ns)
 
-path = os.path.abspath("")
+# path = os.path.abspath("")
 
-B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
-A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
-Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
+# B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
+# A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
+# Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
+
+username = os.environ["USER"]
+B = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/B4.npy".format(username))
+A = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/A4.npy".format(username))
+Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq4.npy".format(username))
+
+
 num_games = 20; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
 cost = np.zeros((1, num_games))
