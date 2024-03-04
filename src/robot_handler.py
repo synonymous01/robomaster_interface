@@ -6,9 +6,9 @@ from std_msgs.msg import Int16
 import tf2_ros
 from math import floor
 
-n_cols = 8
-n_rows = 8
-meter_per_sector_length = 0.5
+n_cols = 4
+n_rows = 4
+meter_per_sector_length = 1
 
 class handler:
     def __init__(self, no, init_x = 0, init_y = 0):
