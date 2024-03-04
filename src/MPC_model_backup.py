@@ -1,4 +1,4 @@
-#!../../../venvs/robot_env/bin/python3.7
+#!../venvs/robot_env/bin/python3.7
 # import rospy
 from timeit import default_timer as timer
 import numpy as np
@@ -391,10 +391,10 @@ round = 0
 # A = FlowConstraints(Bin, Bout, Tp, ns)
 
 path = os.path.abspath("")
-
-B = np.load("{}/src/B4.npy".format(path))
-A = np.load("{}/src/A4.npy".format(path))
-Aeq = np.load("{}/src/Aeq4.npy".format(path))
+username = os.environ["USER"]
+B = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/B4.npy".format(username))
+A = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/A4.npy".format(username))
+Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq4.npy".format(username))
 # B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
 # A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
 # Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
