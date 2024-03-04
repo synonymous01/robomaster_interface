@@ -1,5 +1,6 @@
-#!/usr/bin/env python3
+#!../../../venvs/robot_env/bin/python3.7
 # import rospy
+from timeit import default_timer as timer
 import numpy as np
 import scipy.optimize as opt
 import numpy.matlib
@@ -7,7 +8,7 @@ import math
 import random
 # from std_msgs.msg import Int32MultiArray, Int16
 import os
-import time
+
 ## B matrix
 def shaping(temp, B, ns):
     for k in range(0, ns):
@@ -332,11 +333,10 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     UB = UB[0]
 
     out1 = np.zeros((len(f), 1))
-    start = time.time()
+    start = timer()
     out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="highs", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
-    # out1 = opt.linprog(f, A_ub = A, b_ub = b, A_eq = Aeq, b_eq = beq, method="revised simplex", bounds = [0,1], options = {"maxiter": 5000, "tol" : 1.000e-6, "disp" : False})
-    end = time.time()
-    print("time taken: {} seconds".format(end - start))
+    end = timer()
+    print("seconds taken to calculate: {}".format(end - start))
     optimize1 = out1.x
     print("status of optimization: {}".format(out1.status))
     # np.savetxt("optimized_first_step.csv", optimize1)
@@ -371,7 +371,7 @@ nrows = 4
 ncols = 4
 meter_per_sector_length = 1
 
-T = 30
+T = 10
 Tp = 3
 
 ns = nrows * ncols
@@ -392,15 +392,19 @@ round = 0
 
 path = os.path.abspath("")
 
+B = np.load("{}/src/B4.npy".format(path))
+A = np.load("{}/src/A4.npy".format(path))
+Aeq = np.load("{}/src/Aeq4.npy".format(path))
 # B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
 # A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
 # Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
-B = np.load("B.npy")
-A = np.load("A.npy")
-Aeq = np.load("Aeq.npy")
+
+# B = np.load("B.npy")
+# A = np.load("A.npy")
+# Aeq = np.load("Aeq.npy")
 
 
-num_games = 20; num_lost = 0; num_won = 0
+num_games = 1; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
 cost = np.zeros((1, num_games))
 
@@ -433,7 +437,7 @@ while True: #not rospy.is_shutdown():
         xref[2, 0] = 1
         xref[3, 0] = 1
         # xref[4, 0] = 1
-        xe[13 - 1, 0] = 1
+        xe[15 - 1, 0] = 1
         xf[1 - 1, 0] = 1
         xf[2 - 1, 0] = 1
         xf[3 - 1, 0] = 1
@@ -445,18 +449,20 @@ while True: #not rospy.is_shutdown():
             # rospy.Subscriber("/sectors", Int32MultiArray, callback)
 
             print("Xf[t-1]: {}".format(xf[:,t-1]))
-            xe[12, t-1] = 1
+            xe[15 - 1, t-1] = 1
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
+            # start = timer()
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
-
+            # end = timer()
+            # print("seconds taken to calculate: {}".format(end - start))
             controls = np.nonzero(uf[:, t])
             controls = controls[0]
             next_sector = -1
-            print("B @ uf: {}".format(np.matmul(B,uf[:,t])))
+            # print("B @ uf: {}".format(np.matmul(B,uf[:,t])))
 
-            print("controls: {}".format(controls))
+            # print("controls: {}".format(controls))
             print("xf: {}".format(xf[:,t]))
-            print("uf: {}".format(uf[:,t]))
+            # print("uf: {}".format(uf[:,t]))
 
             # for control in controls:
             #     prev_sector = math.floor(control / (ns - 1)) + 1

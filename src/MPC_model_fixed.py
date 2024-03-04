@@ -362,9 +362,9 @@ def callback(data):
     robot_sectors = temp
 
 
-nrows = 4
-ncols = 4
-meter_per_sector_length = 1
+nrows = 8
+ncols = 8
+meter_per_sector_length = 0.5
 
 T = 30
 Tp = 3
