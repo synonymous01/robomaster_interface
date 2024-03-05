@@ -365,9 +365,9 @@ def callback(data):
     robot_sectors = temp
 
 
-nrows = 4
-ncols = 4
-meter_per_sector_length = 1
+nrows = 8
+ncols = 8
+meter_per_sector_length = 0.5
 
 T = 30
 Tp = 3
@@ -396,9 +396,9 @@ round = 0
 # Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
 
 username = os.environ["USER"]
-B = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/B4.npy".format(username))
-A = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/A4.npy".format(username))
-Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq4.npy".format(username))
+B = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/B8.npy".format(username))
+A = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/A8.npy".format(username))
+Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq8.npy".format(username))
 
 
 num_games = 20; num_lost = 0; num_won = 0
