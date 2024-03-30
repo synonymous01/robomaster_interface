@@ -439,9 +439,10 @@ while not rospy.is_shutdown():
         tau_diff_e = 0.1
 
         while t < T:
-            rospy.Subscriber("/sectors", Int32MultiArray, callback)
+            rospy.Subscriber("/{}/sectors".format(robot_name), Int32MultiArray, callback)
 
-            xe[robot_sectors[0] - 1, t - 1] = 1
+            if robot_sectors[0] != -1:
+                xe[robot_sectors[0] - 1, t - 1] = 1
             xf[robot_sectors[1] - 1, t - 1] = 1
             xf[robot_sectors[2] - 1, t - 1] = 1
             xf[robot_sectors[3] - 1, t - 1] = 1

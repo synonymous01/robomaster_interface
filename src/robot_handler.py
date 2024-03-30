@@ -8,7 +8,7 @@ from math import floor
 
 n_cols = 8
 n_rows = 8
-meter_per_sector_length = 0.5
+# meter_per_sector_length = 0.5
 
 class handler:
     def __init__(self, no, init_x = 0, init_y = 0):
@@ -19,6 +19,8 @@ class handler:
         self.goal_sector = -1
         self.init_x = init_x
         self.init_y = init_y
+        self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
+
 
     def update_goal_sector(self, data):
         self.goal_sector = data.data
@@ -45,8 +47,8 @@ class handler:
 
     def send_to_sector(self):
         def get_goal_pose():
-            x = (((self.goal_sector - 1) % n_cols) + 0.5) * meter_per_sector_length
-            y = ((floor((self.goal_sector - 1) / n_cols)) + 0.5) * meter_per_sector_length
+            x = (((self.goal_sector - 1) % n_cols) + 0.5) * self.meter_per_sector_length
+            y = ((floor((self.goal_sector - 1) / n_cols)) + 0.5) * self.meter_per_sector_length
             return x, y
         
         goal_x, goal_y = get_goal_pose()
