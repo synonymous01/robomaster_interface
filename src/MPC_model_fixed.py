@@ -433,7 +433,10 @@ while not rospy.is_shutdown():
         xref[1, 0] = 1
         xref[2, 0] = 1
         xref[3, 0] = 1
-        # xref[4, 0] = 1
+        xref[4, 0] = 1
+        xref[5, 0] = 1
+        xref[6, 0] = 1
+        xref[7, 0] = 1
 
         t = 1
         tau_diff_e = 0.1

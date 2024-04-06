@@ -3,6 +3,7 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped
 from std_msgs.msg import Int16
+from tf.transformations import quaternion_multiply, quaternion_from_euler
 import tf2_ros
 from math import floor
 
@@ -26,6 +27,10 @@ class handler:
         self.goal_sector = data.data
 
     def update_pose(self, data):
+        fixed_initial_rotation = quaternion_from_euler(0, 0, (np.pi / 2), 'rxyz')
+        curr_orientation = data.pose.pose.orientation
+        in_quaternions = [curr_orientation.x, curr_orientation.y, curr_orientation.z, curr_orientation.w]
+        resultant = quaternion_multiply(fixed_initial_rotation, curr_orientation)
         broadcaster = tf2_ros.TransformBroadcaster()
         t = TransformStamped()
         t.header.stamp = rospy.Time.now()
@@ -34,7 +39,11 @@ class handler:
         t.transform.translation.x = data.pose.pose.position.x + self.init_x
         t.transform.translation.y = data.pose.pose.position.y + self.init_y
         t.transform.translation.z = 0.0
-        t.transform.rotation = data.pose.pose.orientation
+        # t.transform.rotation = data.pose.pose.orientation
+        t.transform.rotation.x = resultant[0]
+        t.transform.rotation.y = resultant[1]
+        t.transform.rotation.z = resultant[2]
+        t.transform.rotation.w = resultant[3]
         broadcaster.sendTransform(t)
 
     def send_velocities(self, vx, vy, omega = 0):
