@@ -357,7 +357,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-robot_sectors = [49,1,3,5]
+robot_sectors = [61,1,4,7]
 
 def callback(data):
     global robot_sectors
@@ -367,7 +367,7 @@ def callback(data):
 
 nrows = 8
 ncols = 8
-meter_per_sector_length = 0.5
+# meter_per_sector_length = 0.5
 
 T = 30
 Tp = 3
@@ -442,8 +442,8 @@ while not rospy.is_shutdown():
         tau_diff_e = 0.1
 
         while t < T:
-            rospy.Subscriber("/{}/sectors".format(robot_name), Int32MultiArray, callback)
-
+            # rospy.Subscriber("/{}/sectors".format(robot_name), Int32MultiArray, callback)
+            rospy.Subscriber("/sectors", Int32MultiArray, callback)
             if robot_sectors[0] != -1:
                 xe[robot_sectors[0] - 1, t - 1] = 1
             xf[robot_sectors[1] - 1, t - 1] = 1
