@@ -30,7 +30,7 @@ class handler:
         fixed_initial_rotation = quaternion_from_euler(0, 0, (np.pi / 2), 'rxyz')
         curr_orientation = data.pose.pose.orientation
         in_quaternions = [curr_orientation.x, curr_orientation.y, curr_orientation.z, curr_orientation.w]
-        resultant = quaternion_multiply(fixed_initial_rotation, curr_orientation)
+        resultant = quaternion_multiply(fixed_initial_rotation, in_quaternions)
         broadcaster = tf2_ros.TransformBroadcaster()
         t = TransformStamped()
         t.header.stamp = rospy.Time.now()
