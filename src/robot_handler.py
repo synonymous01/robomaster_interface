@@ -44,11 +44,11 @@ class handler:
         t.transform.translation.x = data.pose.pose.position.x + self.init_x
         t.transform.translation.y = data.pose.pose.position.y + self.init_y
         t.transform.translation.z = 0.0
-        t.transform.rotation = data.pose.pose.orientation
-        # t.transform.rotation.x = resultant[0]
-        # t.transform.rotation.y = resultant[1]
-        # t.transform.rotation.z = resultant[2]
-        # t.transform.rotation.w = resultant[3]
+        # t.transform.rotation = data.pose.pose.orientation
+        t.transform.rotation.x = resultant[0]
+        t.transform.rotation.y = resultant[1]
+        t.transform.rotation.z = resultant[2]
+        t.transform.rotation.w = resultant[3]
         broadcaster.sendTransform(t)
 
     def send_velocities(self, vx, vy, omega = 0):
