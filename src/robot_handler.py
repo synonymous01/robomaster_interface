@@ -101,12 +101,15 @@ class handler:
             v = Vector3Stamped()
             v.vector.x = vx
             v.vector.y = vy
+            
+            vt = tf2_geometry_msgs.do_transform_vector3(v, trans)
+            vx = v.vector.x
+            vy = v.vector.y
             if abs(vx) > v_max:
                 vx = np.sign(vx) * v_max
             if abs(vy) > v_max:
                 vy = np.sign(vy) * v_max
 
-            vt = tf2_geometry_msgs.do_transform_vector3(v, trans)
             self.send_velocities(vt.vector.x, vt.vector.y)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
