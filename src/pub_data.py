@@ -68,6 +68,8 @@ class rover:
     def play_audio(self, data):
         if data:
             self.robo.play_audio(filename="narration.wav").wait_for_completed()
+
+            
     def update_imu(self, imu_info):
         acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z = imu_info
         # acc_z= 9.8
@@ -186,6 +188,7 @@ class rover:
         self.chass.drive_speed(x=vx, y=vy, z=omega, timeout=5)
 
     def close_robot(self):
+        self.robo.play_audio("narration.wav").wait_for_completed()
         print("Closing RoboMaster robot.")
         self.robo.close()
 #    def press(self, key):
