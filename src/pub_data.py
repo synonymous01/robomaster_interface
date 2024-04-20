@@ -7,6 +7,7 @@ from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Bool
 
 import numpy as np
 
@@ -33,6 +34,7 @@ def get_quaternion_from_euler(roll, pitch, yaw):
 
 class rover:
     def __init__(self):
+        rospy.Subscriber('/victory_signal', Bool, self.play_audio)
         self.imu_pub = rospy.Publisher('imu_data', Imu, queue_size=10)
         # self.pose_pub = rospy.Publisher('pose_data', Point, queue_size=10)
         # self.angle_pub = rospy.Publisher('angle_data', )
@@ -63,7 +65,9 @@ class rover:
         self.current_time=rospy.Time.now()
         self.previous_time=rospy.Time.now()
 
-
+    def play_audio(self, data):
+        if data:
+            self.robo.play_audio(filename="narration.wav").wait_for_completed()
     def update_imu(self, imu_info):
         acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z = imu_info
         # acc_z= 9.8
