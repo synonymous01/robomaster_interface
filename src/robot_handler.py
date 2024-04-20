@@ -2,7 +2,7 @@
 import rospy
 import numpy as np
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped
-from std_msgs.msg import Int16
+from std_msgs.msg import Int16, Bool
 from tf.transformations import quaternion_multiply, quaternion_from_euler
 import tf2_ros
 from math import floor
@@ -16,12 +16,16 @@ class handler:
         self.name = "robot{}".format(no)
         rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
         rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
+        rospy.Subscriber("/victory_signal", Bool, self.stop)
         self.pub = rospy.Publisher("/{}/cmd_vel".format(self.name), Twist, queue_size=10)
         self.goal_sector = -1
         self.init_x = init_x
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
 
+    def stop(self, data):
+        if data.data:
+            self.send_velocities(0, 0, 0)
 
     def update_goal_sector(self, data):
         self.goal_sector = data.data
