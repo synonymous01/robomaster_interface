@@ -66,10 +66,10 @@ class rover:
         self.previous_time=rospy.Time.now()
 
     def play_audio(self, data):
-        if data:
-            self.robo.play_audio(filename="narration.wav").wait_for_completed()
+        self.chass.drive_speed(x=0, y=0, z=0, timeout=5)
+        self.robo.play_audio(filename="narration.wav").wait_for_completed()
 
-            
+
     def update_imu(self, imu_info):
         acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z = imu_info
         # acc_z= 9.8
