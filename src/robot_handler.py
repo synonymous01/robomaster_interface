@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import rospy
 import numpy as np
-from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped, Vector3Stamped
 from std_msgs.msg import Int16, Bool
 from tf.transformations import quaternion_multiply, quaternion_from_euler
+import tf2_geometry_msgs
 import tf2_ros
 from math import floor
 
@@ -88,6 +89,7 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
+            curr_rot = trans.transform.rotation
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
@@ -96,12 +98,16 @@ class handler:
             vx = u[0]
             vy = u[1]
 
+            v = Vector3Stamped()
+            v.vector.x = vx
+            v.vector.y = vy
             if abs(vx) > v_max:
                 vx = np.sign(vx) * v_max
             if abs(vy) > v_max:
                 vy = np.sign(vy) * v_max
 
-            self.send_velocities(vx, vy)
+            vt = tf2_geometry_msgs.do_transform_vector3(v, trans)
+            self.send_velocities(vt.vector.x, vt.vector.y)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
 
