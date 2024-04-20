@@ -3,7 +3,7 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped, Vector3Stamped
 from std_msgs.msg import Int16, Bool
-from tf.transformations import quaternion_multiply, quaternion_from_euler
+from tf.transformations import quaternion_multiply, quaternion_from_euler, quaternion_inverse
 import tf2_geometry_msgs
 import tf2_ros
 from math import floor
@@ -89,7 +89,7 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
-            curr_rot = trans.transform.rotation
+            curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
@@ -101,8 +101,12 @@ class handler:
             v = Vector3Stamped()
             v.vector.x = vx
             v.vector.y = vy
-            
-            vt = tf2_geometry_msgs.do_transform_vector3(v, trans)
+            t = TransformStamped()
+            t.transform.rotation.x = curr_rot[0]
+            t.transform.rotation.y = curr_rot[1]
+            t.transform.rotation.z = curr_rot[2]
+            t.transform.rotation.w = curr_rot[3]
+            vt = tf2_geometry_msgs.do_transform_vector3(v, t)
             vx = v.vector.x
             vy = v.vector.y
             if abs(vx) > v_max:
