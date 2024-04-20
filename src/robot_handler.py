@@ -89,32 +89,32 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
-            curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
+            # curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
             u[0] = K[0] * err_x
             u[1] = -K[1] * err_y
-            vx = u[0]
-            vy = u[1]
+            vx = u[1]
+            vy = u[0]
 
-            v = Vector3Stamped()
-            v.vector.x = vx
-            v.vector.y = vy
-            t = TransformStamped()
-            t.transform.rotation.x = curr_rot[0]
-            t.transform.rotation.y = curr_rot[1]
-            t.transform.rotation.z = curr_rot[2]
-            t.transform.rotation.w = curr_rot[3]
-            vt = tf2_geometry_msgs.do_transform_vector3(v, t)
-            vx = v.vector.x
-            vy = v.vector.y
+            # v = Vector3Stamped()
+            # v.vector.x = vx
+            # v.vector.y = vy
+            # t = TransformStamped()
+            # t.transform.rotation.x = curr_rot[0]
+            # t.transform.rotation.y = curr_rot[1]
+            # t.transform.rotation.z = curr_rot[2]
+            # t.transform.rotation.w = curr_rot[3]
+            # vt = tf2_geometry_msgs.do_transform_vector3(v, t)
+            # vx = v.vector.x
+            # vy = v.vector.y
             if abs(vx) > v_max:
                 vx = np.sign(vx) * v_max
             if abs(vy) > v_max:
                 vy = np.sign(vy) * v_max
 
-            self.send_velocities(vt.vector.x, vt.vector.y)
+            self.send_velocities(vx, vy)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
 
