@@ -94,10 +94,10 @@ class handler:
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
             u[0] = K[0] * err_x
-            u[1] = -K[1] * err_y
+            u[1] = K[1] * err_y
 
-            vx = u[1]
-            vy = u[0]
+            vx = u[0]
+            vy = u[1]
 
             # v = Vector3Stamped()
             # v.vector.x = vx
