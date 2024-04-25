@@ -3,7 +3,7 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TransformStamped, Vector3Stamped
 from std_msgs.msg import Int16, Bool
-from tf.transformations import quaternion_multiply, quaternion_from_euler, quaternion_inverse
+from tf.transformations import quaternion_multiply, quaternion_from_euler, quaternion_inverse, euler_from_quaternion
 import tf2_geometry_msgs
 import tf2_ros
 from math import floor
@@ -41,14 +41,16 @@ class handler:
         t.header.stamp = rospy.Time.now()
         t.header.frame_id = "world"
         t.child_frame_id = "{}_odom_combined".format(self.name)
-        t.transform.translation.x = data.pose.pose.position.x + self.init_x
-        t.transform.translation.y = data.pose.pose.position.y + self.init_y
-        t.transform.translation.z = 0.0
         # t.transform.rotation = data.pose.pose.orientation
         t.transform.rotation.x = resultant[0]
         t.transform.rotation.y = resultant[1]
         t.transform.rotation.z = resultant[2]
         t.transform.rotation.w = resultant[3]
+
+        _, __, yaw = euler_from_quaternion(resultant, 'rxyz')
+        t.transform.translation.x = data.pose.pose.position.x * np.cos(yaw) - data.pose.pose.position.y * np.sin(yaw) + self.init_x
+        t.transform.translation.y = data.pose.pose.position.x * np.sin(yaw) + data.pose.pose.position.y * np.cos(yaw) + self.init_y
+        t.transform.translation.z = 0.0
         broadcaster.sendTransform(t)
 
     def send_velocities(self, vx, vy, omega = 0):
