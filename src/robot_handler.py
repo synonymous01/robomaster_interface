@@ -100,8 +100,8 @@ class handler:
 
 
             # GENERALIZE THIS IF IT WORKS OK
-            vx = u[0] * np.cos(np.pi / 2) - u[1] * np.sin(np.pi / 2)
-            vy = u[1] * np.cos(np.pi / 2) + u[0] * np.sin(np.pi / 2)
+            vx = u[0] * np.cos(np.pi / -2) - u[1] * np.sin(np.pi / -2)
+            vy = u[1] * np.cos(np.pi / -2) + u[0] * np.sin(np.pi / -2)
 
             # v = Vector3Stamped()
             # v.vector.x = vx
