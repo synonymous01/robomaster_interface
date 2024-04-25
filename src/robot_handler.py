@@ -98,8 +98,10 @@ class handler:
             u[0] = K[0] * err_x
             u[1] = K[1] * err_y
 
-            vx = u[0]
-            vy = u[1]
+
+            # GENERALIZE THIS IF IT WORKS OK
+            vx = u[0] * np.cos(np.pi / 2) - u[1] * np.sin(np.pi / 2)
+            vy = u[1] * np.cos(np.pi / 2) + u[0] * np.sin(np.pi / 2)
 
             # v = Vector3Stamped()
             # v.vector.x = vx

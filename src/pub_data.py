@@ -188,8 +188,8 @@ class rover:
         self.chass.drive_speed(x=vx, y=vy, z=omega, timeout=5)
 
     def close_robot(self):
-        self.robo.play_audio("narration.wav").wait_for_completed()
-        print("Closing RoboMaster robot.")
+        # self.robo.play_audio("narration.wav").wait_for_completed()
+        rospy.loginfo("Closing RoboMaster robot.")
         self.robo.close()
 #    def press(self, key):
 #            if key=='w':
