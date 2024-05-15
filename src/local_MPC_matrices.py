@@ -6,13 +6,13 @@ import tf2_ros
 
 n_cols = 8
 
-def coords_to_sector(x_coord, y_coord, meter_per_square_length):
+def coords_to_sector(x_coord, y_coord, meter_per_square_length=0.45):
     x = floor(x_coord/meter_per_square_length)
     y = floor(y_coord/meter_per_square_length)
     return (x + y * n_cols) + 1
 
 rospy.init_node('xf_publisher', anonymous=True)
-meter_per_square_length = int(rospy.get_param('~meter_per_square_length'))
+METER_PER_SQUARE_LENGTH = int(rospy.get_param('~meter_per_square_length'))
 robot_name = rospy.get_param('~robot_number')
 tfBuffer = tf2_ros.Buffer()
 listener = tf2_ros.TransformListener(tfBuffer)
@@ -37,7 +37,7 @@ while not rospy.is_shutdown():
                 rate.sleep()
                 continue
 
-        sectors[i] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, meter_per_square_length)
+        sectors[i] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, METER_PER_SQUARE_LENGTH)
     rospy.loginfo("sectors sent: {}".format(sectors))
     sending.data = sectors
     publisher.publish(sending)
