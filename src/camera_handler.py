@@ -65,7 +65,7 @@ class getDepth:
         br = tf2_ros.TransformBroadcaster()
         t = geometry_msgs.msg.TransformStamped()
         t.header.stamp = rospy.Time.now()
-        t.header.frame_id = "{}_camera_link".format(self.robot_name)
+        t.header.frame_id = "{}_camera_aligned_depth_to_color_frame".format(self.robot_name)
         t.child_frame_id = "{}_estimated_enemy".format(self.robot_name)
         t.transform.translation.x = x_disp
         t.transform.translation.y = y_disp
@@ -79,7 +79,7 @@ class getDepth:
 
     def updateDepth(self, data):
         try:
-            cv_depth = self.bridge.compressed_imgmsg_to_cv2(data)
+            cv_depth = self.bridge.imgmsg_to_cv2(data)
             self.image = cv_depth
         except CvBridgeError as e:
             rospy.logerr(e)
@@ -89,7 +89,7 @@ class getDepth:
 
     def process_image(self, data):
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data)
+            cv_image = self.bridge.compressed_imgmsg_to_cv2(data)
             # converted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             # rospy.logwarn_once(data.encoding)
             END = time.time()
