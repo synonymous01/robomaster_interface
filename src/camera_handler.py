@@ -68,7 +68,7 @@ class getDepth:
         t.header.frame_id = "{}_camera_aligned_depth_to_color_frame".format(self.robot_name)
         t.child_frame_id = "{}_estimated_enemy".format(self.robot_name)
         t.transform.translation.x = y_disp
-        t.transform.translation.y = -x_disp
+        t.transform.translation.y = -(x_disp - 0.25)
         t.transform.translation.z = 0.0
         t.transform.rotation.x = 0.0
         t.transform.rotation.y = 0.0
