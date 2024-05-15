@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import rospy
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 import time
 from tf.transformations import quaternion_from_euler
@@ -18,10 +18,10 @@ END = 0
 class getDepth:
     def __init__(self):
         self.bridge = CvBridge()
-        rospy.Subscriber('/camera/color/image_raw', Image, self.process_image)
-        rospy.Subscriber('/camera/depth/image_rect_raw', Image, self.updateDepth)
-        self.image = None
         self.robot_name = rospy.get_param('~robot_number')
+        rospy.Subscriber('/{}/camera/color/image_raw/compressed'.format(self.robot_name), CompressedImage, self.process_image)
+        rospy.Subscriber('/{}/camera/aligned_depth_to_color/image_raw'.format(self.robot_name), Image, self.updateDepth)
+        self.image = None
 
 
     def detect_pink(self, img):
@@ -40,23 +40,24 @@ class getDepth:
 
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
-
+        max_area = -1
+        biggest_contour = None
         for pic, contour in enumerate(contours):
             area = cv2.contourArea(contour)
-            if area > 400:
-                x, y, w, h =cv2.boundingRect(contour)
-                img = cv2.rectangle(img, (x,y), (x+w, y+h), (255, 0, 0), 2)
-                midx = x + (w // 2)
-                midy = y + (h // 2)
-                # END = time.time()
-                angle = (midx - 320) * ANGLE_PER_PIXEL
-                rads = angle * (np.pi / 180)
-                # rospy.logwarn("depth at {},{} and angle {} is: {} took {}s".format(midy, midx, angle, self.image[midy, midx], END - START))
-                y_displacement = self.image[midy, midx] * np.sin(rads)
-                x_displacement = self.image[midy, midx] * np.cos(rads)
-                self.sendingTransform(x_displacement, y_displacement)
-                # rospy.logwarn("x: {}, y: {}, h:{}".format(x_displacement, y_displacement, self.image[midy, midx]))
-        # detected_output = cv2.bitwise_and(img, img, mask=mask)
+            if area > max_area:
+                biggest_contour = pic
+                max_area = area
+
+        x, y, w, h = cv2.boundingRect(contours[biggest_contour])
+        # img = cv2.rectangle(img, (x,y), (x+w, y+h), (255, 0, 0), 2)
+        midx = x + (w//2)
+        midy = y + (h // 2)
+        angle = (midx - 320) * ANGLE_PER_PIXEL
+        rads = angle * (np.pi / 180)
+        x_displacement = self.image[midy, midx] * np.sin(rads)
+        y_displacement = self.image[midy, midx] * np.cos(rads)
+        self.sendingTransform(x_displacement, y_displacement)
+
         
         return img
 
@@ -78,7 +79,7 @@ class getDepth:
 
     def updateDepth(self, data):
         try:
-            cv_depth = self.bridge.imgmsg_to_cv2(data, data.encoding)
+            cv_depth = self.bridge.compressed_imgmsg_to_cv2(data)
             self.image = cv_depth
         except CvBridgeError as e:
             rospy.logerr(e)
@@ -88,14 +89,14 @@ class getDepth:
 
     def process_image(self, data):
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, data.encoding)
+            cv_image = self.bridge.imgmsg_to_cv2(data)
             # converted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-            rospy.logwarn_once(data.encoding)
+            # rospy.logwarn_once(data.encoding)
             END = time.time()
             # rospy.logwarn("depth at {} is {}, took: {}s".format((data.width / 2, data.height / 2), cv_image[data.width / 2, data.height / 2], END - START))
             disp = self.detect_pink(cv_image)
-            cv2.imshow("image", disp)
-            cv2.waitKey(1)
+            # cv2.imshow("image", disp)
+            # cv2.waitKey(1)
         except CvBridgeError as e:
             rospy.logerr(e)
             return
