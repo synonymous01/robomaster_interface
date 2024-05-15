@@ -56,7 +56,7 @@ class getDepth:
         rads = angle * (np.pi / 180)
         x_displacement = self.image[midy, midx] * np.sin(rads)
         y_displacement = self.image[midy, midx] * np.cos(rads)
-        self.sendingTransform(x_displacement, y_displacement)
+        self.sendingTransform(x_displacement / 1000, y_displacement / 1000)
 
         
         return img
