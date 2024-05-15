@@ -34,7 +34,7 @@ class getDepth:
         kernel = np.ones((5,5), "uint8")
 
         mask = cv2.inRange(hsvFrame, red_lower, red_upper)
-        cv2.imshow('mask', mask)
+        # cv2.imshow('mask', mask)
         mask =  cv2.dilate(mask, kernel)
         
 
