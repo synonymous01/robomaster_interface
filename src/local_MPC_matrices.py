@@ -22,22 +22,31 @@ publisher = rospy.Publisher('sectors', Int32MultiArray, queue_size=1)
 while not rospy.is_shutdown():
     sending = Int32MultiArray()
 
-    sectors = [-1, 1, 3, 5]
-    for i in range(4):
-        if i == 0:
-            try:
-                trans = tfBuffer.lookup_transform('world', '{}_estimated_enemy', rospy.Time())
-            except:
-                rate.sleep()
-                continue
-        else:
-            try:
-                trans = tfBuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
-            except:
-                rate.sleep()
-                continue
+    sectors = [-1, -1, -1, 1, 3, 5]
+    #finding sectors for defenders
+    for i in range(1,4,1):
+        try:
+            trans = tfBuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
+        except:
+            rate.sleep()
+            continue
 
-        sectors[i] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, METER_PER_SQUARE_LENGTH)
+        sectors[i + 2] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, METER_PER_SQUARE_LENGTH)
+    
+    # finding sector for attacker using information from all defenders
+    for i in range(1,4,1):
+        try:
+            trans = tfBuffer.lookup_transform('world', 'robot{}_estimated_enemy').format(i), rospy.Time())
+        except:
+            rate.sleep()
+            continue
+        possible_sector = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, METER_PER_SQUARE_LENGTH)
+
+        if possible_sector == sectors[i + 2]:
+            sectors[i - 1] = -1
+        else:
+            sectors[i - 1] = possible_sector
+
     rospy.loginfo("sectors sent: {}".format(sectors))
     sending.data = sectors
     publisher.publish(sending)

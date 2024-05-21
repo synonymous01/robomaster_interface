@@ -444,13 +444,21 @@ while not rospy.is_shutdown():
         while t < T:
             # rospy.Subscriber("/{}/sectors".format(robot_name), Int32MultiArray, callback)
             rospy.Subscriber("/sectors", Int32MultiArray, callback)
-            if robot_sectors[0] != -1:
-                xe[robot_sectors[0] - 1, t - 1] = 1
-            xf[robot_sectors[1] - 1, t - 1] = 1
-            xf[robot_sectors[2] - 1, t - 1] = 1
-            xf[robot_sectors[3] - 1, t - 1] = 1
+            if len(robot_sectors) == 4:
+                if robot_sectors[0] != -1:
+                    xe[robot_sectors[0] - 1, t - 1] = 1
+                xf[robot_sectors[1] - 1, t - 1] = 1
+                xf[robot_sectors[2] - 1, t - 1] = 1
+                xf[robot_sectors[3] - 1, t - 1] = 1
+            else:
+                for i in range(3):
+                    if robot_sectors[i] != -1:
+                        xe[robot_sectors[i] - 1, t - 1] += 1/3
+                xf[robot_sectors[3] - 1, t - 1] = 1
+                xf[robot_sectors[4] - 1, t - 1] = 1
+                xf[robot_sectors[5] - 1, t - 1] = 1
 
-
+            rospy.loginfo("xe: {}".format(xe[:, t-1]))
             rospy.loginfo("xf[t-1]: {}".format(xf[:, t - 1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             _, uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
@@ -458,11 +466,11 @@ while not rospy.is_shutdown():
             controls = np.nonzero(uf[:, t])
             controls = controls[0]
             next_sector = -1
-            rospy.loginfo("B @ uf: {}".format(np.matmul(B,uf[:,t])))
+            # rospy.loginfo("B @ uf: {}".format(np.matmul(B,uf[:,t])))
 
             rospy.loginfo("controls: {}".format(controls))
             # rospy.loginfo("xf: {}".format(xf[:,t]))
-            rospy.loginfo("uf: {}".format(uf[:,t]))
+            # rospy.loginfo("uf: {}".format(uf[:,t]))
 
             for control in controls:
                 next_sector = math.floor(control / (ns - 1)) + 1
