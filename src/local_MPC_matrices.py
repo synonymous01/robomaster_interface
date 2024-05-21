@@ -36,7 +36,7 @@ while not rospy.is_shutdown():
     # finding sector for attacker using information from all defenders
     for i in range(1,4,1):
         try:
-            trans = tfBuffer.lookup_transform('world', 'robot{}_estimated_enemy').format(i), rospy.Time())
+            trans = tfBuffer.lookup_transform('world', 'robot{}_estimated_enemy').format(i), rospy.Time()
         except:
             rate.sleep()
             continue
