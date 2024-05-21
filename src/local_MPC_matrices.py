@@ -17,7 +17,7 @@ robot_name = rospy.get_param('~robot_number')
 tfBuffer = tf2_ros.Buffer()
 listener = tf2_ros.TransformListener(tfBuffer)
 rate = rospy.Rate(10)
-publisher = rospy.Publisher('sectors', Int32MultiArray, queue_size=1)
+publisher = rospy.Publisher('/{}/sectors'.format(robot_name), Int32MultiArray, queue_size=1)
 
 while not rospy.is_shutdown():
     sending = Int32MultiArray()
