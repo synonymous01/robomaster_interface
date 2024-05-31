@@ -357,7 +357,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-time.sleep(10)
+time.sleep(30)
 robot_sectors = [-1, -1, -1, 1, 4, 7]
 
 def callback(data):
@@ -481,7 +481,7 @@ while not rospy.is_shutdown():
                 else:
                     prev_sector = offset + 1
 
-                if prev_sector == robot_sectors[robot_number]:
+                if prev_sector == robot_sectors[robot_number + 2]:
                     rospy.loginfo("sending to sector : {}".format(next_sector))
                     pub.publish(next_sector)
                     break
