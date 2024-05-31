@@ -461,6 +461,7 @@ while not rospy.is_shutdown():
             rospy.loginfo("xe: {}".format(xe[:, t-1]))
             rospy.loginfo("xf[t-1]: {}".format(xf[:, t - 1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
+            rospy.loginfo("Xe_assumed: {}".format(xe_assumed))
             _, uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
 
             controls = np.nonzero(uf[:, t])

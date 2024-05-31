@@ -22,7 +22,7 @@ publisher = rospy.Publisher('/{}/sectors'.format(robot_name), Int32MultiArray, q
 while not rospy.is_shutdown():
     sending = Int32MultiArray()
 
-    sectors = [-1, -1, -1, 1, 3, 5]
+    sectors = [-1, -1, -1, 1, 4, 7]
     #finding sectors for defenders
     for i in range(1,4,1):
         try:
