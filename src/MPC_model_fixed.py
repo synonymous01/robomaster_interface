@@ -8,7 +8,7 @@ import math
 import random
 from std_msgs.msg import Int32MultiArray, Int16
 import os
-
+import time
 ## B matrix
 def shaping(temp, B, ns):
     for k in range(0, ns):
@@ -357,6 +357,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
+time.sleep(10)
 robot_sectors = [-1, -1, -1, 1, 4, 7]
 
 def callback(data):
@@ -472,7 +473,6 @@ while not rospy.is_shutdown():
             rospy.loginfo("controls: {}".format(controls))
             # rospy.loginfo("xf: {}".format(xf[:,t]))
             # rospy.loginfo("uf: {}".format(uf[:,t]))
-
             for control in controls:
                 next_sector = math.floor(control / (ns - 1)) + 1
                 offset = control % (ns - 1)

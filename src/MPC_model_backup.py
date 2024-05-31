@@ -1,10 +1,12 @@
 #!../venvs/robot_env/bin/python3.7
 # import rospy
+# import rospy
 from timeit import default_timer as timer
 import numpy as np
 import scipy.optimize as opt
 import numpy.matlib
 import math
+import time
 import random
 # from std_msgs.msg import Int32MultiArray, Int16
 import os
@@ -402,7 +404,7 @@ Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq4.npy".format(
 # B = np.load("B.npy")
 # A = np.load("A.npy")
 # Aeq = np.load("Aeq.npy")
-
+# rate = rospy.Rate(2)
 
 num_games = 1; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
@@ -437,7 +439,8 @@ while True: #not rospy.is_shutdown():
         xref[2, 0] = 1
         xref[3, 0] = 1
         # xref[4, 0] = 1
-        xe[15 - 1, 0] = 1
+        xe[15 - 1, 0] = 2/3
+        xe[15, 0] = 1/3
         xf[1 - 1, 0] = 1
         xf[2 - 1, 0] = 1
         xf[3 - 1, 0] = 1
@@ -449,9 +452,12 @@ while True: #not rospy.is_shutdown():
             # rospy.Subscriber("/sectors", Int32MultiArray, callback)
 
             print("Xf[t-1]: {}".format(xf[:,t-1]))
-            xe[15 - 1, t-1] = 1
+            xe[15 - 1, t-1] = 2/3
+            xe[15,t-1] = 1/3
+            print("xE: {}".format(xe[:, t-1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             # start = timer()
+            print("xE_assumed: {}".format(xe_assumed))
             xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
             # end = timer()
             # print("seconds taken to calculate: {}".format(end - start))
@@ -489,4 +495,6 @@ while True: #not rospy.is_shutdown():
                     # break
                 print("robot at sector {} will go to sector {}.".format(prev_sector, next_sector))
 
+            # rate.sleep()
+            time.sleep(1)
             t = t + 1
