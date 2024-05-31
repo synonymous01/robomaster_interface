@@ -47,6 +47,17 @@ while not rospy.is_shutdown():
         else:
             sectors[i - 1] = possible_sector
 
+
+    try:
+        trans = tfBuffer.lookup_transform('world', 'robot0_odom_combined', rospy.Time())
+    except:
+        rate.sleep()
+        continue
+
+    actual_sector = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y)
+
+    if actual_sector == sectors[3] or actual_sector == sectors[4] or actual_sector == sectors[5]:
+        rospy.signal_shutdown("Attacker captured!!!!!!!!!!!!!!!!!!!")
     rospy.loginfo("sectors sent: {}".format(sectors))
     sending.data = sectors
     publisher.publish(sending)
