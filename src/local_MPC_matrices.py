@@ -26,10 +26,8 @@ while not rospy.is_shutdown():
     #finding sectors for defenders
     for i in range(1,4,1):
         try:
-            rospy.loginfo("Is it even going here?")
             trans = tfBuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
         except:
-            rate.sleep()
             continue
 
         sectors[i + 2] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, 0.45)
@@ -39,7 +37,6 @@ while not rospy.is_shutdown():
         try:
             trans2 = tfBuffer.lookup_transform('world', 'robot{}_estimated_enemy'.format(i), rospy.Time())
         except:
-            rate.sleep()
             continue
         possible_sector = coords_to_sector(trans2.transform.translation.x, trans2.transform.translation.y, 0.45)
 
@@ -50,15 +47,15 @@ while not rospy.is_shutdown():
 
 
     try:
-        trans = tfBuffer.lookup_transform('world', 'robot0_odom_combined', rospy.Time())
+        trans3 = tfBuffer.lookup_transform('world', 'robot0_odom_combined', rospy.Time())
     except:
-        rate.sleep()
         continue
 
-    actual_sector = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y)
+    actual_sector = coords_to_sector(trans3.transform.translation.x, trans3.transform.translation.y)
 
     if actual_sector == sectors[3] or actual_sector == sectors[4] or actual_sector == sectors[5]:
         rospy.signal_shutdown("Attacker captured!!!!!!!!!!!!!!!!!!!")
     rospy.loginfo("sectors sent: {}".format(sectors))
     sending.data = sectors
     publisher.publish(sending)
+    rate.sleep()
