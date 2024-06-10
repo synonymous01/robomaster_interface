@@ -357,7 +357,8 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     out_uf = Uf[:, 0]
     return out_xf, out_uf
 
-time.sleep(30)
+time.sleep(90)
+rospy.loginfo("STARTING NOW!")
 robot_sectors = [-1, -1, -1, 1, 4, 7]
 
 def callback(data):

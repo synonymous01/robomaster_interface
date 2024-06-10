@@ -3,6 +3,7 @@ import rospy
 from std_msgs.msg import Int32MultiArray
 from math import floor # type: ignore
 import tf2_ros
+from turtle import pos
 
 n_cols = 8
 
@@ -43,8 +44,8 @@ while not rospy.is_shutdown():
             rospy.logerr("Exception occured getting trans2")
             continue
         possible_sector = coords_to_sector(trans2.transform.translation.x, trans2.transform.translation.y, 0.45)
-
-        if possible_sector == sectors[i + 2]:
+ 
+        if possible_sector == sectors[i + 2] or possible_sector > 64:
             sectors[i - 1] = -1
         else:
             sectors[i - 1] = possible_sector
