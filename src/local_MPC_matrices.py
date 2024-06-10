@@ -55,7 +55,6 @@ while not rospy.is_shutdown():
         rospy.loginfo("trans3 data recieved: ({}, {})".format(trans3.transform.translation.x, trans3.transform.translation.y))
     except:
         rospy.logerr("Exception occured getting trans3")
-        continue
 
     actual_sector = coords_to_sector(trans3.transform.translation.x, trans3.transform.translation.y)
 
