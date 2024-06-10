@@ -53,13 +53,15 @@ while not rospy.is_shutdown():
     try:
         trans3 = tfBuffer.lookup_transform('world', 'robot0_odom_combined', rospy.Time())
         rospy.loginfo("trans3 data recieved: ({}, {})".format(trans3.transform.translation.x, trans3.transform.translation.y))
+        actual_sector = coords_to_sector(trans3.transform.translation.x, trans3.transform.translation.y)
+        if actual_sector == sectors[3] or actual_sector == sectors[4] or actual_sector == sectors[5]:
+            rospy.signal_shutdown("Attacker captured!!!!!!!!!!!!!!!!!!!")
     except:
         rospy.logerr("Exception occured getting trans3")
 
-    actual_sector = coords_to_sector(trans3.transform.translation.x, trans3.transform.translation.y)
+    
 
-    if actual_sector == sectors[3] or actual_sector == sectors[4] or actual_sector == sectors[5]:
-        rospy.signal_shutdown("Attacker captured!!!!!!!!!!!!!!!!!!!")
+    
     
     
     rospy.loginfo("sectors sent: {}".format(sectors))
