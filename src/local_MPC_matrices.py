@@ -27,7 +27,9 @@ while not rospy.is_shutdown():
     for i in range(1,4,1):
         try:
             trans = tfBuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
+            rospy.loginfo("Trans data recieved: ({}, {})".format(trans.transform.translation.x, trans.transform.translation.y))
         except:
+            rospy.logerr("Exception occurred trans")
             continue
 
         sectors[i + 2] = coords_to_sector(trans.transform.translation.x, trans.transform.translation.y, 0.45)
@@ -36,7 +38,9 @@ while not rospy.is_shutdown():
     for i in range(1,4,1):
         try:
             trans2 = tfBuffer.lookup_transform('world', 'robot{}_estimated_enemy'.format(i), rospy.Time())
+            rospy.loginfo("trans2 data recieved: ({}, {})".format(trans2.transform.translation.x, trans2.transform.translation.y))
         except:
+            rospy.logerr("Exception occured getting trans2")
             continue
         possible_sector = coords_to_sector(trans2.transform.translation.x, trans2.transform.translation.y, 0.45)
 
@@ -48,13 +52,17 @@ while not rospy.is_shutdown():
 
     try:
         trans3 = tfBuffer.lookup_transform('world', 'robot0_odom_combined', rospy.Time())
+        rospy.loginfo("trans3 data recieved: ({}, {})".format(trans3.transform.translation.x, trans3.transform.translation.y))
     except:
+        rospy.logerr("Exception occured getting trans3")
         continue
 
     actual_sector = coords_to_sector(trans3.transform.translation.x, trans3.transform.translation.y)
 
     if actual_sector == sectors[3] or actual_sector == sectors[4] or actual_sector == sectors[5]:
         rospy.signal_shutdown("Attacker captured!!!!!!!!!!!!!!!!!!!")
+    
+    
     rospy.loginfo("sectors sent: {}".format(sectors))
     sending.data = sectors
     publisher.publish(sending)
