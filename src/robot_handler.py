@@ -60,6 +60,20 @@ class handler:
         sending.angular.z = omega
         self.pub.publish(sending)
 
+    def get_state_vector(self):
+        tfbuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(tfbuffer)
+        poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
+        for i in range(4):
+            try:
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                pass
+            poses[0, i] = trans.transform.translation.x
+            poses[1, i] = trans.transform.translation.y
+
+        return poses
+
 
     def send_to_sector(self):
         def get_goal_pose():
@@ -91,7 +105,10 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
-            # curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
+            # orientation = [trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w]
+
+            curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
+            _, __, yaw = euler_from_quaternion(curr_rot, 'rxyz')
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
@@ -100,8 +117,12 @@ class handler:
 
 
             # GENERALIZE THIS IF IT WORKS OK
-            vx = u[0] * np.cos(np.pi / -2) - u[1] * np.sin(np.pi / -2)
-            vy = u[1] * np.cos(np.pi / -2) + u[0] * np.sin(np.pi / -2)
+            # vx = u[0] * np.cos(np.pi / -2) - u[1] * np.sin(np.pi / -2)
+            # vy = u[1] * np.cos(np.pi / -2) + u[0] * np.sin(np.pi / -2)
+
+            #generalized
+            vx = u[0] * np.cos(yaw) - u[1] * np.sin(yaw)
+            vy = u[1] * np.cos(yaw) + u[0] * np.sin(yaw)
 
             # v = Vector3Stamped()
             # v.vector.x = vx
