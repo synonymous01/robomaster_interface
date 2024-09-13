@@ -7,13 +7,15 @@ from tf.transformations import quaternion_multiply, quaternion_from_euler, quate
 import tf2_geometry_msgs
 import tf2_ros
 from math import floor
+from prsbc import XRandSpan, create_si_pr_barrier_certificate_centralized
 
 n_cols = 8
 n_rows = 8
 # meter_per_sector_length = 0.5
 
 class handler:
-    def __init__(self, no, init_x = 0, init_y = 0):
+    def __init__(self, no, init_x = 0, init_y = 0, confidence_level = 1):
+        self.number = no
         self.name = "robot{}".format(no)
         rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
         rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
@@ -23,7 +25,7 @@ class handler:
         self.init_x = init_x
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
-
+        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.4, magnitude_limit=0.3, confidence_level=confidence_level)
     # def stop(self, data):
     #     if data.data:
     #         self.send_velocities(0, 0, 0)
@@ -60,8 +62,27 @@ class handler:
         sending.angular.z = omega
         self.pub.publish(sending)
 
+    def get_state_vector(self):
+        tfbuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(tfbuffer)
+        poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
+        for i in range(4):
+            try:
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                pass
+            poses[0, i] = trans.transform.translation.x
+            poses[1, i] = trans.transform.translation.y
+
+        return poses
+
 
     def send_to_sector(self):
+        x_rand_span_x = 0 * np.random.randint(1, 2, (1, 4))
+        x_rand_span_y = 0 * np.random.randint(1, 2, (1, 4))
+        XRandSpan = np.concatenate((x_rand_span_x, x_rand_span_y))
+        v_rand_span = 0.005 * np.ones((2, 4))
+
         def get_goal_pose():
             x = (((self.goal_sector - 1) % n_cols) + 0.5) * self.meter_per_sector_length
             y = ((floor((self.goal_sector - 1) / n_cols)) + 0.5) * self.meter_per_sector_length
@@ -91,7 +112,10 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
-            # curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
+            # orientation = [trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w]
+
+            curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
+            _, __, yaw = euler_from_quaternion(curr_rot, 'rxyz')
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
             err_x = goal_x - curr_x
             err_y = goal_y - curr_y
@@ -100,9 +124,17 @@ class handler:
 
 
             # GENERALIZE THIS IF IT WORKS OK
-            vx = u[0] * np.cos(np.pi / -2) - u[1] * np.sin(np.pi / -2)
-            vy = u[1] * np.cos(np.pi / -2) + u[0] * np.sin(np.pi / -2)
+            # vx = u[0] * np.cos(np.pi / -2) - u[1] * np.sin(np.pi / -2)
+            # vy = u[1] * np.cos(np.pi / -2) + u[0] * np.sin(np.pi / -2)
 
+            #generalized
+            vx = u[0] * np.cos(yaw) - u[1] * np.sin(yaw)
+            vy = u[1] * np.cos(yaw) + u[0] * np.sin(yaw)
+            dx = [vx, vy]
+            vels = np.zeros((2, 4))
+            vels[:, self.number] = dx
+            states = self.get_state_vector()
+            dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
             # v = Vector3Stamped()
             # v.vector.x = vx
             # v.vector.y = vy
@@ -114,12 +146,16 @@ class handler:
             # vt = tf2_geometry_msgs.do_transform_vector3(v, t)
             # vx = v.vector.x
             # vy = v.vector.y
-            if abs(vx) > v_max:
-                vx = np.sign(vx) * v_max
-            if abs(vy) > v_max:
-                vy = np.sign(vy) * v_max
+            # if abs(vx) > v_max:
+            #     vx = np.sign(vx) * v_max
+            # if abs(vy) > v_max:
+            #     vy = np.sign(vy) * v_max
 
-            self.send_velocities(vx, vy)
+            vx_safe = dx_safe[0, self.number] 
+            vy_safe = dx_safe[1, self.number]
+
+            # self.send_velocities(vx, vy)
+            self.send_velocities(vx_safe, vy_safe)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
 
@@ -128,8 +164,10 @@ print('testing!')
 robot_name = rospy.get_param('~robot_number')
 init_x = rospy.get_param('~initial_x')
 init_y = rospy.get_param('~initial_y')
+#init_theta = rospy.get_param('~initial_theta')
+conf_lvl = rospy.get_param('~confidence_level')
 robot_number = int(robot_name[-1])
-robot_handler = handler(robot_number, float(init_x), float(init_y))
+robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl)
 
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
