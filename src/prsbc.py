@@ -1,4 +1,4 @@
-#!../venvs/robot_env/bin/python3.7
+#!/usr/bin/env python
 from __future__ import print_function
 # import rosnode
 # import tf_conversions
