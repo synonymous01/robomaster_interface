@@ -29,7 +29,7 @@ class handler:
         self.init_x = init_x
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
-        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=1, magnitude_limit=0.1, confidence_level=confidence_level)
+        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.5, magnitude_limit=0.1, confidence_level=confidence_level)
     # def stop(self, data):
     #     if data.data:
     #         self.send_velocities(0, 0, 0)
