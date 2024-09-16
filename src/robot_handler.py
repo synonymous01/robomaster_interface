@@ -15,7 +15,10 @@ n_rows = 8
 
 class handler:
     def __init__(self, no, init_x = 0, init_y = 0, confidence_level = 1):
-        self.number = no
+        if no == 1:
+            self.number = 0
+        elif no == 3:
+            self.number = 1
         self.name = "robot{}".format(no)
         rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
         rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
@@ -141,15 +144,13 @@ class handler:
             vy = u[1] * np.cos(yaw) + u[0] * np.sin(yaw)
             dx = [vx, vy]
             vels = np.zeros((2, 2))
-            if self.number == 1:
-                vels[:, 0] = dx
-            else:
-                vels[:, 1] = dx
+            vels[:, self.number] = dx
             states = self.get_state_vector()
             rospy.logerr("states: {}".format(states))
             if states.any():
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
                 rospy.loginfo("whoops! using safe velocities: {}".format(dx_safe))
+
                 vx_safe = dx_safe[0, self.number] 
                 vy_safe = dx_safe[1, self.number]
             else:
