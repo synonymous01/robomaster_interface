@@ -72,6 +72,7 @@ class handler:
                 poses[0, i] = trans.transform.translation.x
                 poses[1, i] = trans.transform.translation.y
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                rospy.logerr("cant find transform")
                 pass
             
         return poses
