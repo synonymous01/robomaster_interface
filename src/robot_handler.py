@@ -80,17 +80,17 @@ class handler:
         #         pass
         try:
             trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
+            poses[0, 0] = trans.transform.translation.x
+            poses[1, 0] = trans.transform.translation.y
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             pass
-        poses[0, 0] = trans.transform.translation.x
-        poses[1, 0] = trans.transform.translation.y
 
         try:
             trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
+            poses[0, 1] = trans.transform.translation.x
+            poses[1, 1] = trans.transform.translation.y 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             pass
-        poses[0, 1] = trans.transform.translation.x
-        poses[1, 1] = trans.transform.translation.y 
         return poses
 
 
