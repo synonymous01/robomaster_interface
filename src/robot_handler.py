@@ -136,7 +136,7 @@ class handler:
             vels[:, self.number] = dx
             states = self.get_state_vector()
             rospy.logerr("states: {}".format(states))
-            if states.all():
+            if states.any():
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
                 rospy.loginfo("whoops! using safe velocities: {}".format(dx_safe))
                 vx_safe = dx_safe[0, self.number] 
