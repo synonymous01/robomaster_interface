@@ -166,7 +166,7 @@ class handler:
             self.send_velocities(vx_safe, vy_safe)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
-
+rospy.timer.sleep(50)
 rospy.init_node('handler')
 print('testing!')
 robot_name = rospy.get_param('~robot_number')
