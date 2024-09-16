@@ -79,11 +79,11 @@ class handler:
         #         rospy.logerr("cant find transform")
         #         pass
             
-        trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(0), rospy.Duration(0.1))
+        trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
         poses[0, 0] = trans.transform.translation.x
         poses[1, 0] = trans.transform.translation.y
 
-        trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(0), rospy.Duration(0.1))
+        trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
         poses[0, 1] = trans.transform.translation.x
         poses[1, 1] = trans.transform.translation.y 
         return poses
