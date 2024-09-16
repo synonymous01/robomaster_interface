@@ -167,7 +167,6 @@ class handler:
             self.send_velocities(vx_safe, vy_safe)
             goal_reached = (0.25 > np.linalg.norm(np.array([goal_x, goal_y]) - np.array([curr_x, curr_y])))
 
-rospy.timer.sleep(50)
 rospy.init_node('handler')
 print('testing!')
 robot_name = rospy.get_param('~robot_number')
@@ -178,6 +177,7 @@ conf_lvl = rospy.get_param('~confidence_level')
 robot_number = int(robot_name[-1])
 robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl)
 
+rospy.timer.sleep(50)
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
         robot_handler.send_to_sector()
