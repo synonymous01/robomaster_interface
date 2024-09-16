@@ -134,6 +134,7 @@ class handler:
             vels = np.zeros((2, 4))
             vels[:, self.number] = dx
             states = self.get_state_vector()
+            rospy.logerr("states: {}".format(states))
             if not(states.all()):
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
                 vx_safe = dx_safe[0, self.number] 
