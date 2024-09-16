@@ -19,6 +19,7 @@ class handler:
         #     self.number = 0
         # elif no == 3:
         #     self.number = 1
+        self.number = no
         self.name = "robot{}".format(no)
         rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
         rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
