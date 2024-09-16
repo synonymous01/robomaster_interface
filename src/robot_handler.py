@@ -66,10 +66,9 @@ class handler:
         sending.angular.z = omega
         self.pub.publish(sending)
 
-    def get_state_vector(self):
+    def get_state_vector(self, poses=np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)):
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
-        poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
         # poses = np.zeros((2,2), dtype=np.float16)
         for i in range(4):
             try:
@@ -107,6 +106,7 @@ class handler:
             return x, y
         
         goal_x, goal_y = get_goal_pose()
+        states = self.get_state_vector()
         # self.go_to_goal(x, y)
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
@@ -151,9 +151,9 @@ class handler:
             dx = [vx, vy]
             vels = np.zeros((2, 4))
             vels[:, self.number] = dx
-            states = self.get_state_vector()
+            states = self.get_state_vector(states)
             rospy.logerr("states: {}".format(states))
-            if states.any():
+            if states.all():
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
                 rospy.loginfo("whoops! using safe velocities: {}".format(dx_safe))
 
@@ -196,6 +196,7 @@ robot_number = int(robot_name[-1])
 robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl)
 
 rospy.timer.sleep(10)
+
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
         robot_handler.send_to_sector()
