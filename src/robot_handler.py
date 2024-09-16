@@ -83,7 +83,7 @@ class handler:
         poses[0, 0] = trans.transform.translation.x
         poses[1, 0] = trans.transform.translation.y
 
-        trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(0), rospy.Duration(0.1)
+        trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(0), rospy.Duration(0.1))
         poses[0, 1] = trans.transform.translation.x
         poses[1, 1] = trans.transform.translation.y 
         return poses
@@ -189,7 +189,7 @@ conf_lvl = rospy.get_param('~confidence_level')
 robot_number = int(robot_name[-1])
 robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl)
 
-rospy.timer.sleep(50)
+rospy.timer.sleep(10)
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
         robot_handler.send_to_sector()
