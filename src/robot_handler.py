@@ -137,9 +137,11 @@ class handler:
             rospy.logerr("states: {}".format(states))
             if states.all():
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
+                rospy.loginfo("whoops! using safe velocities: {}".format(dx_safe))
                 vx_safe = dx_safe[0, self.number] 
                 vy_safe = dx_safe[1, self.number]
             else:
+                rospy.loginfo("being notty: {}, {}".format(vx_safe, vy_safe))
                 vx_safe = vx
                 vy_safe = vy
             # v = Vector3Stamped()
@@ -153,10 +155,10 @@ class handler:
             # vt = tf2_geometry_msgs.do_transform_vector3(v, t)
             # vx = v.vector.x
             # vy = v.vector.y
-            # if abs(vx) > v_max:
-            #     vx = np.sign(vx) * v_max
-            # if abs(vy) > v_max:
-            #     vy = np.sign(vy) * v_max
+            if abs(vx_safe) > v_max:
+                vx_safe = np.sign(vx_safe) * v_max
+            if abs(vy) > v_max:
+                vy_safe = np.sign(vy_safe) * v_max
 
 
 
