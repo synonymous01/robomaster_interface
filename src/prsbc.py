@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 #from utilities.Telemetry import Telemetry
-N=4
+N=2
 x_rand_span_x = 0.085 * np.random.randint(1, 2, (1, N))  # setting up position error range for each robot,
 x_rand_span_y = 0.085 * np.random.randint(1, 2, (1, N))
 XRandSpan = np.concatenate((x_rand_span_x, x_rand_span_y))
