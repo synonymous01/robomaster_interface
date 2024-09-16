@@ -15,10 +15,10 @@ n_rows = 8
 
 class handler:
     def __init__(self, no, init_x = 0, init_y = 0, confidence_level = 1):
-        if no == 1:
-            self.number = 0
-        elif no == 3:
-            self.number = 1
+        # if no == 1:
+        #     self.number = 0
+        # elif no == 3:
+        #     self.number = 1
         self.name = "robot{}".format(no)
         rospy.Subscriber("/{}/robot_pose_ekf/odom_combined".format(self.name), PoseWithCovarianceStamped, self.update_pose)
         rospy.Subscriber("/{}/goal_sector".format(self.name), Int16, self.update_goal_sector)
@@ -68,37 +68,37 @@ class handler:
     def get_state_vector(self):
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
-        # poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
-        poses = np.zeros((2,2), dtype=np.float16)
-        # for i in range(4):
-        #     try:
-        #         trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time().now(), rospy.Duration(3.0))
-        #         poses[0, i] = trans.transform.translation.x
-        #         poses[1, i] = trans.transform.translation.y
-        #     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-        #         rospy.logerr("cant find transform")
-        #         pass
-        try:
-            trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
-            poses[0, 0] = trans.transform.translation.x
-            poses[1, 0] = trans.transform.translation.y
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            pass
+        poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
+        # poses = np.zeros((2,2), dtype=np.float16)
+        for i in range(4):
+            try:
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.1))
+                poses[0, i] = trans.transform.translation.x
+                poses[1, i] = trans.transform.translation.y
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                rospy.logerr("cant find transform")
+                pass
+        # try:
+        #     trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        #     poses[0, 0] = trans.transform.translation.x
+        #     poses[1, 0] = trans.transform.translation.y
+        # except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        #     pass
 
-        try:
-            trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
-            poses[0, 1] = trans.transform.translation.x
-            poses[1, 1] = trans.transform.translation.y 
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            pass
+        # try:
+        #     trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        #     poses[0, 1] = trans.transform.translation.x
+        #     poses[1, 1] = trans.transform.translation.y 
+        # except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        #     pass
         return poses
 
 
     def send_to_sector(self):
-        x_rand_span_x = 0 * np.random.randint(1, 2, (1, 2))
-        x_rand_span_y = 0 * np.random.randint(1, 2, (1, 2))
+        x_rand_span_x = 0 * np.random.randint(1, 2, (1, 4))
+        x_rand_span_y = 0 * np.random.randint(1, 2, (1, 4))
         XRandSpan = np.concatenate((x_rand_span_x, x_rand_span_y))
-        v_rand_span = 0.005 * np.ones((2, 2))
+        v_rand_span = 0.005 * np.ones((2, 4))
 
         def get_goal_pose():
             x = (((self.goal_sector - 1) % n_cols) + 0.5) * self.meter_per_sector_length
@@ -148,7 +148,7 @@ class handler:
             vx = u[0] * np.cos(yaw) - u[1] * np.sin(yaw)
             vy = u[1] * np.cos(yaw) + u[0] * np.sin(yaw)
             dx = [vx, vy]
-            vels = np.zeros((2, 2))
+            vels = np.zeros((2, 4))
             vels[:, self.number] = dx
             states = self.get_state_vector()
             rospy.logerr("states: {}".format(states))
