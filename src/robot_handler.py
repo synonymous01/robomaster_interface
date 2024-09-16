@@ -25,7 +25,7 @@ class handler:
         self.init_x = init_x
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
-        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.4, magnitude_limit=0.3, confidence_level=confidence_level)
+        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.5, magnitude_limit=0.3, confidence_level=confidence_level)
     # def stop(self, data):
     #     if data.data:
     #         self.send_velocities(0, 0, 0)
@@ -68,7 +68,7 @@ class handler:
         poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
         for i in range(4):
             try:
-                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time().now(), rospy.Duration(1.0))
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time().now(), rospy.Duration(3.0))
                 poses[0, i] = trans.transform.translation.x
                 poses[1, i] = trans.transform.translation.y
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
