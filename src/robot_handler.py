@@ -134,7 +134,7 @@ class handler:
             vels = np.zeros((2, 4))
             vels[:, self.number] = dx
             states = self.get_state_vector()
-            if all(states != 0):
+            if not(states.all()):
                 dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
                 vx_safe = dx_safe[0, self.number] 
                 vy_safe = dx_safe[1, self.number]
