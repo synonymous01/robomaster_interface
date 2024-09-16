@@ -141,9 +141,9 @@ class handler:
                 vx_safe = dx_safe[0, self.number] 
                 vy_safe = dx_safe[1, self.number]
             else:
-                rospy.loginfo("being notty: {}, {}".format(vx_safe, vy_safe))
                 vx_safe = vx
                 vy_safe = vy
+                rospy.loginfo("being notty: {}, {}".format(vx_safe, vy_safe))
             # v = Vector3Stamped()
             # v.vector.x = vx
             # v.vector.y = vy
