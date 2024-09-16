@@ -134,7 +134,13 @@ class handler:
             vels = np.zeros((2, 4))
             vels[:, self.number] = dx
             states = self.get_state_vector()
-            dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
+            if states != 0:
+                dx_safe = self.barrier_cert(vels, states, XRandSpan, v_rand_span)
+                vx_safe = dx_safe[0, self.number] 
+                vy_safe = dx_safe[1, self.number]
+            else:
+                vx_safe = vx
+                vy_safe = vy
             # v = Vector3Stamped()
             # v.vector.x = vx
             # v.vector.y = vy
@@ -151,8 +157,7 @@ class handler:
             # if abs(vy) > v_max:
             #     vy = np.sign(vy) * v_max
 
-            vx_safe = dx_safe[0, self.number] 
-            vy_safe = dx_safe[1, self.number]
+
 
             # self.send_velocities(vx, vy)
             self.send_velocities(vx_safe, vy_safe)
