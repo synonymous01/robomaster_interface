@@ -68,7 +68,7 @@ class handler:
         poses = np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)
         for i in range(4):
             try:
-                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time())
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time().now(), rospy.Duration(1.0))
                 poses[0, i] = trans.transform.translation.x
                 poses[1, i] = trans.transform.translation.y
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
