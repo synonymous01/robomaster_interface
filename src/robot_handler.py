@@ -78,12 +78,17 @@ class handler:
         #     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         #         rospy.logerr("cant find transform")
         #         pass
-            
-        trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        try:
+            trans = tfbuffer.lookup_transform('world', 'robot1_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            pass
         poses[0, 0] = trans.transform.translation.x
         poses[1, 0] = trans.transform.translation.y
 
-        trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        try:
+            trans = tfbuffer.lookup_transform('world', 'robot3_odom_combined', rospy.Time(), rospy.Duration(0.1))
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            pass
         poses[0, 1] = trans.transform.translation.x
         poses[1, 1] = trans.transform.translation.y 
         return poses
@@ -170,7 +175,7 @@ class handler:
             # vy = v.vector.y
             if abs(vx_safe) > v_max:
                 vx_safe = np.sign(vx_safe) * v_max
-            if abs(vy) > v_max:
+            if abs(vy_safe) > v_max:
                 vy_safe = np.sign(vy_safe) * v_max
 
 
