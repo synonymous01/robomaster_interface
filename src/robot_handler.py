@@ -14,7 +14,7 @@ n_rows = 8
 # meter_per_sector_length = 0.5
 
 class handler:
-    def __init__(self, no, init_x = 0, init_y = 0, confidence_level = 1):
+    def __init__(self, no, init_x = 0, init_y = 0, confidence_level = 1, magnitude_limit = 0.1, safety_radius=0.5):
         # if no == 1:
         #     self.number = 0
         # elif no == 3:
@@ -29,7 +29,7 @@ class handler:
         self.init_x = init_x
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
-        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.5, magnitude_limit=0.1, confidence_level=confidence_level)
+        self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=safety_radius, magnitude_limit=magnitude_limit, confidence_level=confidence_level)
 
 
     def update_goal_sector(self, data):
@@ -177,8 +177,10 @@ init_x = rospy.get_param('~initial_x')
 init_y = rospy.get_param('~initial_y')
 #init_theta = rospy.get_param('~initial_theta')
 conf_lvl = rospy.get_param('~confidence_level')
+mag_lim = rospy.get_param('~magnitude_limit')
+safety_rad = rospy.get_param('~safety_radius')
 robot_number = int(robot_name[-1])
-robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl)
+robot_handler = handler(robot_number, float(init_x), float(init_y), conf_lvl, mag_lim, safety_rad)
 
 rospy.timer.sleep(10)
 
