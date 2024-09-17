@@ -30,9 +30,7 @@ class handler:
         self.init_y = init_y
         self.meter_per_sector_length = rospy.get_param('~meter_per_sector_length')
         self.barrier_cert = create_si_pr_barrier_certificate_centralized(safety_radius=0.5, magnitude_limit=0.1, confidence_level=confidence_level)
-    # def stop(self, data):
-    #     if data.data:
-    #         self.send_velocities(0, 0, 0)
+
 
     def update_goal_sector(self, data):
         self.goal_sector = data.data
@@ -72,7 +70,7 @@ class handler:
         # poses = np.zeros((2,2), dtype=np.float16)
         for i in range(4):
             try:
-                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.1))
+                trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.2))
                 poses[0, i] = trans.transform.translation.x
                 poses[1, i] = trans.transform.translation.y
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -130,8 +128,6 @@ class handler:
 
             curr_x = trans.transform.translation.x
             curr_y = trans.transform.translation.y
-            # orientation = [trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w]
-
             curr_rot = quaternion_inverse([trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w])
             _, __, yaw = euler_from_quaternion(curr_rot, 'rxyz')
             rospy.loginfo("for goal {}, currx: {}, curry: {}".format(self.goal_sector, curr_x, curr_y))
@@ -163,17 +159,6 @@ class handler:
                 vx_safe = vx
                 vy_safe = vy
                 rospy.loginfo("being notty: {}, {}".format(vx_safe, vy_safe))
-            # v = Vector3Stamped()
-            # v.vector.x = vx
-            # v.vector.y = vy
-            # t = TransformStamped()
-            # t.transform.rotation.x = curr_rot[0]
-            # t.transform.rotation.y = curr_rot[1]
-            # t.transform.rotation.z = curr_rot[2]
-            # t.transform.rotation.w = curr_rot[3]
-            # vt = tf2_geometry_msgs.do_transform_vector3(v, t)
-            # vx = v.vector.x
-            # vy = v.vector.y
             if abs(vx_safe) > v_max:
                 vx_safe = np.sign(vx_safe) * v_max
             if abs(vy_safe) > v_max:
