@@ -67,12 +67,12 @@ class handler:
     def get_state_vector(self, poses=np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)):
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
-        # poses = np.zeros((2,2), dtype=np.float16)
+        # for i in range(1, 4):
         for i in range(4):
             try:
                 trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.2))
-                poses[0, i] = trans.transform.translation.x
-                poses[1, i] = trans.transform.translation.y
+                poses[0, i] = trans.transform.translation.x # i - 1
+                poses[1, i] = trans.transform.translation.y # i - 1 for experiments
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.logerr("cant find transform")
                 pass

@@ -23,7 +23,20 @@ class getDepth:
         rospy.Subscriber('/{}/camera/aligned_depth_to_color/image_raw'.format(self.robot_name), Image, self.updateDepth)
         self.image = None
 
+    def prediction(self, theta, d_estimated):
+        pows = [[0,0], [1,0], [0, 1], [2, 0], [1, 1], [0, 2], [3, 0], [2, 1], [1, 2], [0, 3], [4, 0], [3, 1], [2, 2], [1, 3], [0, 4], [5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]]
 
+        l1 = []
+        for p in pows:
+            a = theta ** p[0]
+            b = d_estimated ** p[1]
+            c = a * b
+            l1.append(c)
+        c = [0, 2.81194092e-01, 3.27773491e-2, -2.37541723e-02, -2.01187981e-01, 1.47128551, 8.95738238e-04, 7.87159333e-03, 8.06450400e-02, -9.69487579e-01, -1.71280640e-05, -1.08111164e-04, -1.39420007e-03, -1.90562191e-02, 2.86003927e-01, 1.27006467e-07, 7.93858571e-07, 2.25215635e-06, 1.45581234e-04, 1.85001219e-03, -3.12306605e-02]
+        intercept = 0.19853936
+        d_pred = np.dot(c, l1) + intercept
+        return d_pred
+    
     def detect_pink(self, img):
         # START = time.time()
         hsvFrame = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
@@ -54,8 +67,11 @@ class getDepth:
         midy = y + (h // 2)
         angle = (midx - 320) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
-        x_displacement = self.image[midy, midx] * np.sin(rads)
-        y_displacement = self.image[midy, midx] * np.cos(rads)
+        predicted_depth = self.prediction(angle, self.image[midy, midx])
+        # x_displacement = self.image[midy, midx] * np.sin(rads)
+        # y_displacement = self.image[midy, midx] * np.cos(rads)
+        x_displacement = predicted_depth * np.sin(rads)
+        y_displacement = predicted_depth * np.cos(rads)
         self.sendingTransform(x_displacement / 1000, y_displacement / 1000)
 
         
