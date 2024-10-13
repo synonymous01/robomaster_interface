@@ -99,7 +99,9 @@ class getDepth:
             self.image = cv_depth
             rospy.logdebug("self.image updated.")
         except CvBridgeError as e:
+            rospy.logerr("SELF.IMAGE FAILED TO UPDATE")
             rospy.logerr(e)
+            rospy.logerr("got it?")
             return
 
 
