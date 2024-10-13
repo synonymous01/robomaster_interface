@@ -40,7 +40,7 @@ class getDepth:
     def detect_pink(self, img):
         # START = time.time()
         hsvFrame = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-        red_lower = np.array([120, 121, 128], np.uint8) 
+        red_lower = np.array([120, 178, 0], np.uint8) 
         red_upper = np.array([179, 255, 255], np.uint8)
 
 
