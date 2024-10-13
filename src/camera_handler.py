@@ -97,6 +97,7 @@ class getDepth:
         try:
             cv_depth = self.bridge.imgmsg_to_cv2(data)
             self.image = cv_depth
+            rospy.logdebug("self.image updated.")
         except CvBridgeError as e:
             rospy.logerr(e)
             return
@@ -108,7 +109,7 @@ class getDepth:
             cv_image = self.bridge.compressed_imgmsg_to_cv2(data)
             # converted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             # rospy.logwarn_once(data.encoding)
-            END = time.time()
+            # END = time.time()
             # rospy.logwarn("depth at {} is {}, took: {}s".format((data.width / 2, data.height / 2), cv_image[data.width / 2, data.height / 2], END - START))
             disp = self.detect_pink(cv_image)
             # cv2.imshow("image", disp)
