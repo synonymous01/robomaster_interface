@@ -19,7 +19,7 @@ class getDepth:
     def __init__(self):
         self.bridge = CvBridge()
         self.robot_name = rospy.get_param('~robot_number')
-        rospy.Subscriber('/{}/camera/color/image_raw/compressed'.format(self.robot_name), CompressedImage, self.process_image)
+        rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.process_image)
         rospy.Subscriber('/{}/camera/aligned_depth_to_color/image_raw'.format(self.robot_name), Image, self.updateDepth)
         self.image = None
 
@@ -108,7 +108,7 @@ class getDepth:
 
     def process_image(self, data):
         try:
-            cv_image = self.bridge.compressed_imgmsg_to_cv2(data)
+            cv_image = self.bridge.imgmsg_to_cv2(data)
             # converted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             # rospy.logwarn_once(data.encoding)
             # END = time.time()
