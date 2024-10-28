@@ -108,17 +108,19 @@ class getDepth:
 
     def process_image(self, data):
         try:
-            cv_image = self.bridge.compressed_imgmsg_to_cv2(data)
+            # cv_image = self.bridge.compressed_imgmsg_to_cv2(data)
             # converted = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             # rospy.logwarn_once(data.encoding)
             # END = time.time()
             # rospy.logwarn("depth at {} is {}, took: {}s".format((data.width / 2, data.height / 2), cv_image[data.width / 2, data.height / 2], END - START))
-            disp = self.detect_pink(cv_image)
+            # disp = self.detect_pink(cv_image)
             # cv2.imshow("image", disp)
             # cv2.waitKey(1)
+            pass
         except CvBridgeError as e:
-            rospy.logerr(e)
-            return
+            pass
+            # rospy.logerr(e)
+            # return
         
 if __name__ == "__main__":
     rospy.init_node("image_processor")
