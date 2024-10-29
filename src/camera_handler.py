@@ -61,7 +61,10 @@ class getDepth:
                 biggest_contour = pic
                 max_area = area
 
-        x, y, w, h = cv2.boundingRect(contours[biggest_contour])
+        try:
+            x, y, w, h = cv2.boundingRect(contours[biggest_contour])
+        except TypeError as e:
+            rospy.logerr(e)
         # img = cv2.rectangle(img, (x,y), (x+w, y+h), (255, 0, 0), 2)
         midx = x + (w//2)
         midy = y + (h // 2)
@@ -119,6 +122,13 @@ class getDepth:
         except CvBridgeError as e:
             rospy.logerr(e)
             return
+
+    def process_image2(self, data):
+        try:
+            cv_image = self.bridge.imgmsg_to_cv2(data)
+            disp = self.detect_pink(cv_image)
+        except CvBridgeError as e:
+            rospy
         
 if __name__ == "__main__":
     rospy.init_node("image_processor")
