@@ -71,13 +71,13 @@ class getDepth:
         midy = y + (h // 2)
         angle = (midx - 320) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
-        predicted_depth = self.prediction(angle, self.image[midy, midx])
+        # predicted_depth = self.prediction(angle, self.image[midy, midx])
         # rospy.loginfo("predicted depth: ")
-        # x_displacement = self.image[midy, midx] * np.sin(rads)
-        # y_displacement = self.image[midy, midx] * np.cos(rads)
-        x_displacement = predicted_depth * np.sin(rads)
-        y_displacement = predicted_depth * np.cos(rads)
-        self.sendingTransform(x_displacement / 1000, y_displacement / 1000)
+        x_displacement = (self.image[midy, midx] * np.sin(rads)) / 1000
+        y_displacement = (self.image[midy, midx] * np.cos(rads)) / 1000
+        # x_displacement = predicted_depth * np.sin(rads)
+        # y_displacement = predicted_depth * np.cos(rads)
+        self.sendingTransform(x_displacement , y_displacement )
 
         
         return img
