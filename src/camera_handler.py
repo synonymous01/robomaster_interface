@@ -24,6 +24,7 @@ class getDepth:
         self.image = None
 
     def prediction(self, theta, d_estimated):
+        d_estimated = d_estimated / 1000
         pows = [[0,0], [1,0], [0, 1], [2, 0], [1, 1], [0, 2], [3, 0], [2, 1], [1, 2], [0, 3], [4, 0], [3, 1], [2, 2], [1, 3], [0, 4], [5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]]
 
         l1 = []
@@ -71,6 +72,7 @@ class getDepth:
         angle = (midx - 320) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
         predicted_depth = self.prediction(angle, self.image[midy, midx])
+        # rospy.loginfo("predicted depth: ")
         # x_displacement = self.image[midy, midx] * np.sin(rads)
         # y_displacement = self.image[midy, midx] * np.cos(rads)
         x_displacement = predicted_depth * np.sin(rads)
