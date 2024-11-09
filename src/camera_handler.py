@@ -88,8 +88,10 @@ class getDepth:
         t.header.stamp = rospy.Time.now()
         t.header.frame_id = "{}_camera_aligned_depth_to_color_frame".format(self.robot_name)
         t.child_frame_id = "{}_estimated_enemy".format(self.robot_name)
-        t.transform.translation.x = y_disp - 0.25
-        t.transform.translation.y = -x_disp
+        # t.transform.translation.x = y_disp - 0.25
+        # t.transform.translation.y = -x_disp
+        t.transform.translation.x = x_disp
+        t.transform.translation.y = y_disp - 0.25
         t.transform.translation.z = 0.0
         t.transform.rotation.x = 0.0
         t.transform.rotation.y = 0.0
@@ -119,8 +121,8 @@ class getDepth:
             # END = time.time()
             # rospy.logwarn("depth at {} is {}, took: {}s".format((data.width / 2, data.height / 2), cv_image[data.width / 2, data.height / 2], END - START))
             disp = self.detect_pink(cv_image)
-            # cv2.imshow("image", disp)
-            # cv2.waitKey(1)
+            cv2.imshow("image", disp)
+            cv2.waitKey(1)
         except CvBridgeError as e:
             rospy.logerr(e)
             return
