@@ -121,8 +121,8 @@ class getDepth:
             # END = time.time()
             # rospy.logwarn("depth at {} is {}, took: {}s".format((data.width / 2, data.height / 2), cv_image[data.width / 2, data.height / 2], END - START))
             disp = self.detect_pink(cv_image)
-            cv2.imshow("image", disp)
-            cv2.waitKey(1)
+            # cv2.imshow("image", disp)
+            # cv2.waitKey(1)
         except CvBridgeError as e:
             rospy.logerr(e)
             return
