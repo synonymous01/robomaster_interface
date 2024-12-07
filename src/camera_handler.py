@@ -12,7 +12,8 @@ import geometry_msgs.msg
 #camera height = 0.2m
 #camera x disp = 0.095m
 #camera y disp = 0.05m
-ANGLE_PER_PIXEL = 0.1359375
+# ANGLE_PER_PIXEL = 0.1359375
+ANGLE_PER_PIXEL = 0.12083333333
 START = 0
 END = 0
 class getDepth:
@@ -41,7 +42,7 @@ class getDepth:
     def detect_pink(self, img):
         # START = time.time()
         hsvFrame = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-        red_lower = np.array([120, 178, 0], np.uint8) 
+        red_lower = np.array([114, 156, 80], np.uint8) 
         red_upper = np.array([179, 255, 255], np.uint8)
 
 
@@ -69,7 +70,7 @@ class getDepth:
         # img = cv2.rectangle(img, (x,y), (x+w, y+h), (255, 0, 0), 2)
         midx = x + (w//2)
         midy = y + (h // 2)
-        angle = (midx - 320) * ANGLE_PER_PIXEL
+        angle = (midx - 640) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
         # predicted_depth = self.prediction(angle, self.image[midy, midx])
         # rospy.loginfo("predicted depth: ")
