@@ -13,7 +13,8 @@ import geometry_msgs.msg
 #camera x disp = 0.095m
 #camera y disp = 0.05m
 # ANGLE_PER_PIXEL = 0.1359375
-ANGLE_PER_PIXEL = 0.12083333333
+# ANGLE_PER_PIXEL = 0.12083333333
+ANGLE_PER_PIXEL = 0.0703125
 START = 0
 END = 0
 class getDepth:
@@ -26,18 +27,7 @@ class getDepth:
 
     def prediction(self, theta, d_estimated):
         d_estimated = d_estimated / 1000
-        pows = [[0,0], [1,0], [0, 1], [2, 0], [1, 1], [0, 2], [3, 0], [2, 1], [1, 2], [0, 3], [4, 0], [3, 1], [2, 2], [1, 3], [0, 4], [5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]]
-
-        l1 = []
-        for p in pows:
-            a = theta ** p[0]
-            b = d_estimated ** p[1]
-            c = a * b
-            l1.append(c)
-        c = [0, 2.81194092e-01, 3.27773491e-2, -2.37541723e-02, -2.01187981e-01, 1.47128551, 8.95738238e-04, 7.87159333e-03, 8.06450400e-02, -9.69487579e-01, -1.71280640e-05, -1.08111164e-04, -1.39420007e-03, -1.90562191e-02, 2.86003927e-01, 1.27006467e-07, 7.93858571e-07, 2.25215635e-06, 1.45581234e-04, 1.85001219e-03, -3.12306605e-02]
-        intercept = 0.19853936
-        d_pred = np.dot(c, l1) + intercept
-        return d_pred
+        return -0.068796 - 0.019926 * theta + 1.158 * d_estimated + 0.0003831 * np.square(theta) - 0.062126 * np.square(d_estimated) + 0.0080107*theta*d_estimated
     
     def detect_pink(self, img):
         # START = time.time()
@@ -72,12 +62,12 @@ class getDepth:
         midy = y + (h // 2)
         angle = (midx - 640) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
-        # predicted_depth = self.prediction(angle, self.image[midy, midx])
+        predicted_depth = self.prediction(angle, self.image[midy, midx])
         # rospy.loginfo("predicted depth: ")
-        x_displacement = (self.image[midy, midx] * np.sin(rads)) / 1000
-        y_displacement = (self.image[midy, midx] * np.cos(rads)) / 1000
-        # x_displacement = predicted_depth * np.sin(rads)
-        # y_displacement = predicted_depth * np.cos(rads)
+        # x_displacement = (self.image[midy, midx] * np.sin(rads)) / 1000
+        # y_displacement = (self.image[midy, midx] * np.cos(rads)) / 1000
+        y_displacement = predicted_depth * np.sin(rads) * -1
+        x_displacement = predicted_depth * np.cos(rads)
         self.sendingTransform(x_displacement , y_displacement )
 
         
@@ -92,7 +82,7 @@ class getDepth:
         # t.transform.translation.x = y_disp - 0.25
         # t.transform.translation.y = -x_disp
         t.transform.translation.x = x_disp
-        t.transform.translation.y = y_disp - 0.25
+        t.transform.translation.y = y_disp
         t.transform.translation.z = 0.0
         t.transform.rotation.x = 0.0
         t.transform.rotation.y = 0.0
