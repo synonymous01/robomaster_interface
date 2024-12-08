@@ -64,15 +64,15 @@ class handler:
         sending.angular.z = omega
         self.pub.publish(sending)
 
-    def get_state_vector(self, poses=np.array([[0, 0, 0, 0], [0, 0, 0, 0]], dtype=np.float16)):
+    def get_state_vector(self, poses=np.array([[0, 0, 0], [0, 0, 0]], dtype=np.float16)):
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
-        # for i in range(1, 4):
-        for i in range(4):
+        for i in range(1, 4):
+        # for i in range(4):
             try:
                 trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.2))
-                poses[0, i] = trans.transform.translation.x # i - 1
-                poses[1, i] = trans.transform.translation.y # i - 1 for experiments
+                poses[0, i-1] = trans.transform.translation.x # i - 1
+                poses[1, i-1] = trans.transform.translation.y # i - 1 for experiments otherwise i
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.logerr("cant find transform")
                 pass
