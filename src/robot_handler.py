@@ -117,7 +117,7 @@ class handler:
         K = [1, 1]
         u = [0.0, 0.0]
         goal_reached = False
-        v_max = 0.1
+        v_max = 0.3
         while not goal_reached:
             goal_x, goal_y = get_goal_pose()
             try:
