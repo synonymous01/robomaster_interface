@@ -186,3 +186,5 @@ rospy.timer.sleep(10)
 while not rospy.is_shutdown():
     if robot_handler.goal_sector != -1:
         robot_handler.send_to_sector()
+    else:
+        robot_handler.send_velocities(0, 0)
