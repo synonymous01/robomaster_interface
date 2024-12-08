@@ -68,7 +68,6 @@ class handler:
         tfbuffer = tf2_ros.Buffer()
         listener = tf2_ros.TransformListener(tfbuffer)
         for i in range(1, 4):
-        # for i in range(4):
             try:
                 trans = tfbuffer.lookup_transform('world', 'robot{}_odom_combined'.format(i), rospy.Time(), rospy.Duration(0.2))
                 poses[0, i-1] = trans.transform.translation.x # i - 1
@@ -93,10 +92,10 @@ class handler:
 
 
     def send_to_sector(self):
-        x_rand_span_x = 0 * np.random.randint(1, 2, (1, 4))
-        x_rand_span_y = 0 * np.random.randint(1, 2, (1, 4))
+        x_rand_span_x = 0 * np.random.randint(1, 2, (1, 3))
+        x_rand_span_y = 0 * np.random.randint(1, 2, (1, 3))
         XRandSpan = np.concatenate((x_rand_span_x, x_rand_span_y))
-        v_rand_span = 0.005 * np.ones((2, 4))
+        v_rand_span = 0.005 * np.ones((2, 3))
 
         def get_goal_pose():
             x = (((self.goal_sector - 1) % n_cols) + 0.5) * self.meter_per_sector_length
@@ -145,7 +144,7 @@ class handler:
             vx = u[0] * np.cos(yaw) - u[1] * np.sin(yaw)
             vy = u[1] * np.cos(yaw) + u[0] * np.sin(yaw)
             dx = [vx, vy]
-            vels = np.zeros((2, 4))
+            vels = np.zeros((2, 3))
             vels[:, self.number] = dx
             states = self.get_state_vector(states)
             rospy.logerr("states: {}".format(states))
