@@ -185,6 +185,13 @@ class rover:
         vy = data.linear.y * -1
         omega = data.angular.z
         omega = omega * (180 / np.pi)
+
+        if vx < 1e-2:
+            vx = 0
+        if vy < 1e-2:
+            vy = 0
+        if omega < 10:
+            omega = 0
         self.chass.drive_speed(x=vx, y=vy, z=omega, timeout=5)
 
     def close_robot(self):
