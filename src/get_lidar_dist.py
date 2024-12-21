@@ -62,7 +62,7 @@ class getDepth:
         angle = (midx - 640) * ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
 
-        index = int((angle - self.angle_min) / self.angle_inc)
+        index = int((rads - self.angle_min) / self.angle_inc)
         distance_found = self.scan_array[index]
         print(distance_found)
         
