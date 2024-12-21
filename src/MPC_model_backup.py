@@ -430,7 +430,7 @@ while True: #not rospy.is_shutdown():
         # xref[4, 0] = 1
         # xe[15 - 1, 0] = 2/3
         # xe[15, 0] = 1/3
-        xe[14,0] = 1
+        # xe[14,0] = 1
         xf[1 - 1, 0] = 1
         xf[2 - 1, 0] = 1
         xf[3 - 1, 0] = 1
@@ -444,7 +444,7 @@ while True: #not rospy.is_shutdown():
             print("Xf[t-1]: {}".format(xf[:,t-1]))
             # xe[15 - 1, t-1] = 2/3
             # xe[15,t-1] = 1/3
-            xe[13,t-1] = 1
+            xe[14 - 1,t-1] = 1
             print("xE: {}".format(xe[:, t-1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             # start = timer()
