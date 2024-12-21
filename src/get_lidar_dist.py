@@ -9,16 +9,12 @@ import time
 from tf.transformations import quaternion_from_euler
 import tf2_ros
 import geometry_msgs.msg
-import csv
 
 ANGLE_PER_PIXEL = 0.0703125
-FILENAME = "./camera_data.csv"
 class getDepth:
     def __init__(self):
         self.tfbuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfbuffer)
-        file = open(FILENAME, 'w')
-        self.writer = csv.writer(file)
         self.bridge = CvBridge()
         self.robot_name = rospy.get_param("~robot_number")
         rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.process_image)
@@ -64,7 +60,7 @@ class getDepth:
 
         index = int((rads - self.angle_min) / self.angle_inc)
         distance_found = self.scan_array[index]
-        print(distance_found)
+        rospy.loginfo(distance_found)
         
 
 
@@ -96,5 +92,5 @@ class getDepth:
             
 if __name__ == "__main__":
     rospy.init_node("image_processor")
-    # getDepth()
+    getDepth()
     rospy.spin()
