@@ -62,7 +62,7 @@ class getDepth:
         distance_found = self.scan_array[index]
         rads - -1 * rads
         
-        if isnan(distance_found):
+        if distance_found == 'inf':
             self.sendingTransform(0,0)
         else:
             y_displacement = distance_found * np.sin(rads)  * -1
