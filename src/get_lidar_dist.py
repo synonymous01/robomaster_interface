@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from math import floor
+from turtle import distance
 import cv2
 import numpy as np
 import rospy
@@ -18,7 +19,6 @@ class getDepth:
         self.bridge = CvBridge()
         self.robot_name = rospy.get_param("~robot_number")
         rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.process_image)
-        rospy.Subscriber('/{}/camera/aligned_depth_to_color/image_raw'.format(self.robot_name), Image, self.updateDepth)
         
         rospy.Subscriber('/scan', LaserScan, self.publish_laser)
         self.image = None
@@ -55,27 +55,37 @@ class getDepth:
 
         midx = x + (w//2)
         midy = y + (h//2)
-        angle = (midx - 640) * ANGLE_PER_PIXEL
+        angle = (midx - 640) * -ANGLE_PER_PIXEL
         rads = angle * (np.pi / 180)
 
         index = int((rads - self.angle_min) / self.angle_inc)
         distance_found = self.scan_array[index]
-        rospy.loginfo(distance_found)
+        rads - -1 * rads
+        y_displacement = distance_found * np.sin(rads)  * -1
+        x_displacement = distance_found * np.cos(rads)
+        self.sendingTransform(x_displacement, y_displacement)
+
+        # rospy.loginfo(distance_found)
         
 
+    def sendingTransform(self, x_disp, y_disp):
+        br = tf2_ros.TransformBroadcaster()
+        t = geometry_msgs.msg.TransformStamped()
+        t.header.stamp = rospy.Time.now()
+        t.header.frame_id = "{}_laser".format(self.robot_name)
+        t.child_frame_id = "{}_estimated_enemy".format(self.robot_name)
+
+        t.transform.translation.x = x_disp
+        t.transform.translation.y = y_disp
+        t.transform.translation.z = 0.0
+        t.transform.rotation.x = 0.0
+        t.transform.rotation.y = 0.0
+        t.transform.rotation.z = 0.0
+        t.transform.rotation.w = 1.0
+
+        br.sendTransform(t)
 
 
-    def updateDepth(self, data):
-        try:
-            cv_depth = self.bridge.imgmsg_to_cv2(data)
-            self.image = cv_depth
-            rospy.loginfo("self.image updated")
-        except CvBridgeError as e:
-            rospy.logerr("SELF.IMAGE FAILED TO UPDATE")
-            rospy.logerr(e)
-            rospy.logerr("got it?")
-            return
-        
     def process_image(self, data):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data)
