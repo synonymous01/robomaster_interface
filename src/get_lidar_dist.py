@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from math import floor
+from math import floor, isnan
 from turtle import distance
 import cv2
 import numpy as np
@@ -61,9 +61,14 @@ class getDepth:
         index = int((rads - self.angle_min) / self.angle_inc)
         distance_found = self.scan_array[index]
         rads - -1 * rads
-        y_displacement = distance_found * np.sin(rads)  * -1
-        x_displacement = distance_found * np.cos(rads)
-        self.sendingTransform(x_displacement, y_displacement)
+        
+        if isnan(distance_found):
+            self.sendingTransform(0,0)
+        else:
+            y_displacement = distance_found * np.sin(rads)  * -1
+            x_displacement = distance_found * np.cos(rads)
+
+            self.sendingTransform(x_displacement, y_displacement)
 
         # rospy.loginfo(distance_found)
         
