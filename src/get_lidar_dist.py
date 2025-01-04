@@ -65,7 +65,7 @@ class getDepth:
         if distance_found == 'inf':
             self.sendingTransform(0,0)
         else:
-            y_displacement = distance_found * np.sin(rads)  * -1
+            y_displacement = distance_found * np.sin(rads) 
             x_displacement = distance_found * np.cos(rads)
 
             self.sendingTransform(x_displacement, y_displacement)
