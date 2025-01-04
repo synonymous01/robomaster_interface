@@ -20,7 +20,7 @@ class getDepth:
         self.robot_name = rospy.get_param("~robot_number")
         rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.process_image)
         
-        rospy.Subscriber('/scan', LaserScan, self.publish_laser)
+        rospy.Subscriber('/{}/scan'.format(self.robot_name), LaserScan, self.publish_laser)
         self.image = None
         self.scan_array = None
         self.angle_inc = None
