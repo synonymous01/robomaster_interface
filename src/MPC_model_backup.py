@@ -11,109 +11,134 @@ import random
 # from std_msgs.msg import Int32MultiArray, Int16
 import os
 
-def bmatrix(nrows, ncols):
+def shaping(temp,B,ns):
+    for k in range(0, ns):
+        brow = B[k,:]
+        brow = np.delete(brow,k)
+        temp[k,:] = brow
+    return temp
+
+def Bmatrix(nrows, ncols):
     ns = nrows * ncols
-    B = np.zeros((ns, ns-1), dtype=int)
-    Bin = np.zeros((ns, ns*(ns-1)), dtype=int)
-    Bout = np.zeros((ns, ns*(ns-1)), dtype=int)
-    N = np.zeros((nrows, ncols, ns), dtype=int)
-    Neigh = np.zeros((ns, ns), dtype=int)
+    B = np.zeros([ns, ns], dtype = int) 
+    Bnew = np.zeros([ns, ns - 1], dtype = int)  
+    Bin = np.zeros([ns, ns * (ns - 1)], dtype = int)
+    Bout = np.zeros([ns, ns * (ns - 1)], dtype = int) 
+    Neigh = np.zeros([ns,ns], dtype = int);
 
-    for i in range(1, nrows + 1):
-        for j in range(1, ncols + 1):
-            s = (i - 1) * ncols + j
-            if i == 1:  # First row
-                if j == 1:  # First column
-                    B[0, 0] = 1
-                    B[0, ncols - 1] = 1
-                    B[0, ncols] = 1
-                elif j == ncols:  # Last sector in first row
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, 2 * s - 2] = 1
-                    B[s - 1, 2 * s - 3] = 1
+    for i in range(0, nrows):
+        for j in range(0, ncols): 
+            if (i == 0):                   #First row
+                if (j == 0):               #First col
+                    B[0][1] = 1
+                    B[0][ncols] = 1
+                    B[0][ncols + 1] = 1
+                elif (j == ncols - 1):         #Last sector, First row
+                    s = (i) * (ncols - 1) + j
+                    B[s][s - 1] = 1
+                    B[s][2 * s] = 1
+                    B[s][2 * s + 1] = 1
                 else:
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, s - 1] = 1
-                    B[s - 1, s + ncols - 3] = 1
-                    B[s - 1, s + ncols - 2] = 1
-                    B[s - 1, s + ncols - 1] = 1
-            elif i == nrows:  # Last row
-                sminus = (i - 2) * ncols
-                if j == 1:
-                    B[s - 1, s - 1] = 1
-                    B[s - 1, sminus] = 1
-                    B[s - 1, sminus + 1] = 1
-                elif j == ncols:  # Last row, last column
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, sminus + j - 1] = 1
-                    B[s - 1, sminus + j - 2] = 1
+                    s = (i) * (ncols - 1) + j
+                    B[s][s - 1] = 1
+                    B[s][s + 1] = 1
+                    B[s][s + ncols - 1] = 1
+                    B[s][s + ncols] = 1 
+                    B[s][s + ncols + 1] = 1
+            
+            elif (i == nrows - 1):             #Last row
+                if (j == 0):
+                    s = (i) * (ncols) + j
+                    sminus = (i) * (ncols - 1)
+                    B[s][s + 1] = 1
+                    B[s][sminus] = 1
+                    B[s][sminus - 1] = 1
+                elif (j == ncols - 1):         #Last row, Last col
+                    s = (i) * (ncols) + j
+                    sminus = (i) * (ncols - 1)
+                    B[s][s - 1] = 1
+                    B[s][sminus + j - 1] = 1 
+                    B[s][sminus + j - 2] = 1
                 else:
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, s - 1] = 1
-                    B[s - 1, sminus + j - 2] = 1
-                    B[s - 1, sminus + j - 1] = 1
-                    B[s - 1, sminus + j] = 1
+                    s = (i) * (ncols) + j
+                    sminus = (i) * (ncols - 1)
+                    B[s][s - 1] = 1
+                    B[s][s + 1] = 1
+                    B[s][sminus + j - 1] = 1
+                    B[s][sminus + j - 2] = 1 
+                    B[s][sminus + j] = 1
+
             else:
-                sminus = (i - 2) * ncols
-                splus = i * ncols
-                if j == 1:
-                    B[s - 1, sminus + j - 1] = 1
-                    B[s - 1, sminus + j] = 1
-                    B[s - 1, splus + j - 2] = 1
-                    B[s - 1, splus + j - 1] = 1
-                    B[s - 1, s - 1] = 1
-                elif j == ncols:
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, sminus + j - 1] = 1
-                    B[s - 1, sminus + j - 2] = 1
-                    B[s - 1, splus + j - 3] = 1
-                    B[s - 1, splus + j - 2] = 1
+                s = (i) * (ncols) + j
+                sminus = (i - 1) * (ncols) 
+                splus = (i + 1) * (ncols) 
+                if (j == 0):
+                    B[s][sminus] = 1
+                    B[s][sminus + 1] = 1 
+                    B[s][splus] = 1
+                    B[s][splus + 1] = 1
+                    B[s][s + 1] = 1
+                elif (j == ncols - 1):
+                    B[s][s - 1] = 1
+                    B[s][sminus + j - 1] = 1
+                    B[s][sminus + j] = 1 
+                    B[s][splus + j - 1] = 1
+                    B[s][splus + j] = 1
                 else:
-                    B[s - 1, s - 2] = 1
-                    B[s - 1, s - 1] = 1
-                    B[s - 1, sminus + j - 2] = 1
-                    B[s - 1, sminus + j - 1] = 1
-                    B[s - 1, sminus + j] = 1
-                    B[s - 1, splus + j - 3] = 1
-                    B[s - 1, splus + j - 2] = 1
-                    B[s - 1, splus + j - 1] = 1
+                    B[s][s + 1] = 1
+                    B[s][s - 1] = 1
+                    B[s][sminus + j + 1] = 1
+                    B[s][sminus + j - 1] = 1
+                    B[s][sminus + j] = 1
+                    B[s][splus + j + 1] = 1
+                    B[s][splus + j - 1] = 1
+                    B[s][splus + j] = 1
 
-    for i in range(ns):
+    Bnew = shaping(Bnew,B,ns)  #resizing B from (100x100) to (100x99)
+    #print("B =")
+    #print(Bnew) 
+
+    for i in range(0, ns):
+        brow = Bnew[i,:]
         ind_st = i * (ns - 1)
-        ind_end = ind_st + (ns - 1)
-        Bin[i, ind_st:ind_end] = B[i, :]
+        ind_end = ind_st + ns - 1
+        Bin[i,ind_st:ind_end] = brow
+    #print("Bin =")
+    #print(Bin)
 
-    # for i in range(ns):
-    #     print(Bin[i,:])
-
-    for i in range(1, ns + 1):
-        neigh1 = np.nonzero(B[i - 1,:])[0]
-        neigh = np.add(neigh1,1) #+ 1
-        # print("neigh", neigh)
-        a = np.asarray(neigh > i).nonzero()[0]
-        # print("a",a)
-        for j in range(len(a)):
-            neigh[a[j]] += 1
-        Neigh[i - 1, neigh - 1] = 1
-        # print("neigh", neigh)
-        row = np.ceil(neigh / ncols).astype(int)
-        col = neigh - (row - 1) * ncols
-
-        # print("row", row)
-        # print("col", col)
-        for k in range(len(row)):
-            N[row[k] - 1, col[k] - 1, i - 1] = 1
-
-        ind = (neigh - 1) * (ns - 1)
-        # print("ind ", ind)
-        for k in range(len(neigh)):
-            if i< neigh[k]:
-                Bout[i - 1, ind[k] + i ] = 1
-            else:
-                Bout[i - 1, ind[k] + i - 1 ] = 1
-
-    # Boutput = np.subtract(Bin, Bout)
+    for i in range(0, ns):
+      neigh = np.where(Bnew[i,:] != 0)
+      
+      for elements in neigh:
+        elements = elements + 1;
+        for element in elements:
+          if i < element:
+            Neigh[i][element] = 1;
+          else:
+            Neigh[i][element - 1] = 1;
+        #y = np.divide(x,ncols)
+        #row = np.zeros(len(neigh[0]), dtype = int)
+        #for b in range(0,len(neigh[0])):
+           #row[b] = math.ceil(y[b])
+           #print(row)
+           #col = x - np.multiply((row-1),ncols);
+      #Compute Bout matrix
+      for neighbors in neigh:
+        for neighbor in neighbors:
+          neighbor = neighbor + 1
+          if i < neighbor:
+            ind = neighbor * (ns-1)
+            #print('ind:')
+            #print(ind)
+            Bout[i][ind + i] = 1
+          else:
+            neighbor = neighbor - 1
+            ind = neighbor * (ns-1)
+            Bout[i][ind + i - 1] = 1 
+    #print('neigh')
+    #print(Neigh)
     return Bin, Bout, Neigh
+
 
 def coordinates(resource, nrows, ncols):
     ns = nrows * ncols
@@ -238,6 +263,8 @@ def FlowConstraints(Bin, Bout, Tp, ns):
             BTp = Bout
         else:
             BTp = np.concatenate((-B, BTp), axis=1)
+            if l == 1:
+                np.save('BTpmine.npy', BTp)
 
         row_st1 = l * ns + 1
         row_end1 = row_st1 + ns - 1
@@ -280,8 +307,8 @@ def DynamicConstraints(Bin, Bout, Tp, ns):
     return Aeq
 
 
-def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
-    Bin, Bout, neigh = bmatrix(nrows, ncols)
+def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols, alpha_f):
+    Bin, Bout, neigh = Bmatrix(nrows, ncols)
     loc_xf = np.nonzero(xf)
 
     for defender in loc_xf:
@@ -303,7 +330,7 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
 
     Xref = np.transpose(numpy.matlib.repmat(np.transpose(xref), 1, Tp))
     
-    alphaf = 0.9
+    alphaf = alpha_f
     betaf = 1 - alphaf
 
     f1 = np.transpose(-(alphaf * Xe + betaf * Xref))
@@ -329,7 +356,6 @@ def LP_defenders(xe_assumed, xref, xf, Aeq, A, Tp, nrows, ncols):
     print("seconds taken to calculate: {}".format(end - start))
     optimize1 = out1.x
     print("status of optimization: {}".format(out1.status))
-    # np.savetxt("optimized_first_step.csv", optimize1)
 
     for l in range(Tp):
         ind_st_xf = (l) * ns + 1
@@ -357,12 +383,12 @@ def callback(data):
     robot_sectors = temp
 
 
-nrows = 4
-ncols = 4
+nrows = 8
+ncols = 8
 meter_per_sector_length = 1
 
 T = 10
-Tp = 3
+Tp = 7
 
 ns = nrows * ncols
 
@@ -370,30 +396,13 @@ nf = 3
 
 ne = 1
 
-alphaf = 0.9; betaf = 1-alphaf
+alphaf = 0.99; betaf = 1-alphaf
 
 round = 0
-
-# [Bin, Bout, Neigh] = Bmatrix(nrows, ncols)
-Bin, Bout, Neigh = bmatrix(4,4)
+Bin , Bout, Neigh = Bmatrix(nrows, ncols)
 B = Bin - Bout
 Aeq = DynamicConstraints(Bin, Bout, Tp, ns)
-
 A = FlowConstraints(Bin, Bout, Tp, ns)
-
-# path = os.path.abspath("")
-# username = os.environ["USER"]
-# B = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/B4.npy".format(username))
-# A = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/A4.npy".format(username))
-# Aeq = np.load("/home/{}/catkin_ws/src/robomaster_interface/src/Aeq4.npy".format(username))
-# B = np.load("{}/../catkin_ws/src/robomaster_interface/src/B.npy".format(path))
-# A = np.load("{}/../catkin_ws/src/robomaster_interface/src/A.npy".format(path))
-# Aeq = np.load("{}/../catkin_ws/src/robomaster_interface/src/Aeq.npy".format(path))
-
-# B = np.load("B.npy")
-# A = np.load("A.npy")
-# Aeq = np.load("Aeq.npy")
-# rate = rospy.Rate(2)
 
 num_games = 1; num_lost = 0; num_won = 0
 num_iterations = np.zeros((1, num_games))
@@ -401,13 +410,7 @@ cost = np.zeros((1, num_games))
 
 Aest = np.zeros((num_games, ns))
 
-# rospy.init_node('defender')
-# robot_name = rospy.get_param('~robot_number')
-# robot_number = int(robot_name[-1])
-# pub = rospy.Publisher('/{}/goal_sector'.format(robot_name), Int16, queue_size=1)
-
-# prev_sector = 0
-while True: #not rospy.is_shutdown():
+while True:
 
     for g in range(num_games):
 
@@ -422,15 +425,19 @@ while True: #not rospy.is_shutdown():
         nu = ns * (ns - 1)
         uf = np.zeros((nu, T))
         Uf = np.zeros((nu, Tp))
-
+        enemy_init_pos = 35
         xref[0, 0] = 1
         xref[1, 0] = 1
         xref[2, 0] = 1
         xref[3, 0] = 1
+        xref[4, 0] = 1
+        xref[5, 0] = 1
+        xref[6, 0] = 1
+        xref[7, 0] = 1
         # xref[4, 0] = 1
         # xe[15 - 1, 0] = 2/3
         # xe[15, 0] = 1/3
-        # xe[14,0] = 1
+        xe[enemy_init_pos - 1,0] = 1
         xf[1 - 1, 0] = 1
         xf[2 - 1, 0] = 1
         xf[3 - 1, 0] = 1
@@ -444,12 +451,12 @@ while True: #not rospy.is_shutdown():
             print("Xf[t-1]: {}".format(xf[:,t-1]))
             # xe[15 - 1, t-1] = 2/3
             # xe[15,t-1] = 1/3
-            xe[14 - 1,t-1] = 1
+            xe[enemy_init_pos-1,t-1] = 1
             print("xE: {}".format(xe[:, t-1]))
             xe_assumed = AssumedModel_enemy(xref, xe[:, t - 1], B , Tp, nrows, ncols, Neigh, tau_diff_e)
             # start = timer()
             print("xE_assumed: {}".format(xe_assumed))
-            xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols)
+            xf[:, t], uf[:, t] = LP_defenders(xe_assumed, xref, xf[:, t - 1], Aeq, A, Tp, nrows, ncols, alphaf)
             # end = timer()
             # print("seconds taken to calculate: {}".format(end - start))
             controls = np.nonzero(uf[:, t])
@@ -461,19 +468,6 @@ while True: #not rospy.is_shutdown():
             print("xf: {}".format(xf[:,t]))
             # print("uf: {}".format(uf[:,t]))
 
-            # for control in controls:
-            #     prev_sector = math.floor(control / (ns - 1)) + 1
-
-            #     if prev_sector == robot_sectors[robot_number]:
-            #         offset = control % (ns - 1)
-            #         if offset >= prev_sector:   
-            #             next_sector = offset + 2
-            #             break
-            #         else:
-            #             next_sector = offset + 1
-            #             break
-            # rospy.loginfo("sending to sector : {}".format(next_sector))
-            # pub.publish(next_sector)
 
             for control in controls:
                 next_sector = math.floor(control / (ns - 1)) + 1
@@ -489,3 +483,99 @@ while True: #not rospy.is_shutdown():
             # rate.sleep()
             time.sleep(1)
             t = t + 1
+
+
+# GRAVEYARD
+
+# def bmatrix(nrows, ncols):
+#     ns = nrows * ncols
+#     B = np.zeros((ns, ns-1), dtype=int)
+#     Bin = np.zeros((ns, ns*(ns-1)), dtype=int)
+#     Bout = np.zeros((ns, ns*(ns-1)), dtype=int)
+#     N = np.zeros((nrows, ncols, ns), dtype=int)
+#     Neigh = np.zeros((ns, ns), dtype=int)
+
+#     for i in range(1, nrows + 1):
+#         for j in range(1, ncols + 1):
+#             s = (i - 1) * ncols + j
+#             if i == 1:  # First row
+#                 if j == 1:  # First column
+#                     B[0, 0] = 1
+#                     B[0, ncols - 1] = 1
+#                     B[0, ncols] = 1
+#                 elif j == ncols:  # Last sector in first row
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, 2 * s - 2] = 1
+#                     B[s - 1, 2 * s - 3] = 1
+#                 else:
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, s - 1] = 1
+#                     B[s - 1, s + ncols - 3] = 1
+#                     B[s - 1, s + ncols - 2] = 1
+#                     B[s - 1, s + ncols - 1] = 1
+#             elif i == nrows:  # Last row
+#                 sminus = (i - 2) * ncols
+#                 if j == 1:
+#                     B[s - 1, s - 1] = 1
+#                     B[s - 1, sminus] = 1
+#                     B[s - 1, sminus + 1] = 1
+#                 elif j == ncols:  # Last row, last column
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, sminus + j - 1] = 1
+#                     B[s - 1, sminus + j - 2] = 1
+#                 else:
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, s - 1] = 1
+#                     B[s - 1, sminus + j - 2] = 1
+#                     B[s - 1, sminus + j - 1] = 1
+#                     B[s - 1, sminus + j] = 1
+#             else:
+#                 sminus = (i - 2) * ncols
+#                 splus = i * ncols
+#                 if j == 1:
+#                     B[s - 1, sminus + j - 1] = 1
+#                     B[s - 1, sminus + j] = 1
+#                     B[s - 1, splus + j - 2] = 1
+#                     B[s - 1, splus + j - 1] = 1
+#                     B[s - 1, s - 1] = 1
+#                 elif j == ncols:
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, sminus + j - 1] = 1
+#                     B[s - 1, sminus + j - 2] = 1
+#                     B[s - 1, splus + j - 3] = 1
+#                     B[s - 1, splus + j - 2] = 1
+#                 else:
+#                     B[s - 1, s - 2] = 1
+#                     B[s - 1, s - 1] = 1
+#                     B[s - 1, sminus + j - 2] = 1
+#                     B[s - 1, sminus + j - 1] = 1
+#                     B[s - 1, sminus + j] = 1
+#                     B[s - 1, splus + j - 3] = 1
+#                     B[s - 1, splus + j - 2] = 1
+#                     B[s - 1, splus + j - 1] = 1
+
+#     for i in range(ns):
+#         ind_st = i * (ns - 1)
+#         ind_end = ind_st + (ns - 1)
+#         Bin[i, ind_st:ind_end] = B[i, :]
+
+#     for i in range(1, ns + 1):
+#         neigh1 = np.nonzero(B[i - 1,:])[0]
+#         neigh = np.add(neigh1,1) 
+#         a = np.asarray(neigh > i).nonzero()[0]
+#         for j in range(len(a)):
+#             neigh[a[j]] += 1
+#         Neigh[i - 1, neigh - 1] = 1
+#         row = np.ceil(neigh / ncols).astype(int)
+#         col = neigh - (row - 1) * ncols
+#         for k in range(len(row)):
+#             N[row[k] - 1, col[k] - 1, i - 1] = 1
+
+#         ind = (neigh - 1) * (ns - 1)
+#         for k in range(len(neigh)):
+#             if i< neigh[k]:
+#                 Bout[i - 1, ind[k] + i ] = 1
+#             else:
+#                 Bout[i - 1, ind[k] + i - 1 ] = 1
+
+#     return Bin, Bout, Neigh
