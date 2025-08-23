@@ -4,9 +4,9 @@
     <arg name="initial_x" default=""/>
     <arg name="initial_y" default=""/>
     <group ns="robot1">
-        <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch">
             <arg name="tf_prefix" value="robot1_camera"/>
-        </include>
+        </include> -->
         <node name="interfacer" pkg="robomaster_interface" type="pub_data.py">
             <param name="robot_number" value="1"/>
         </node>
@@ -31,6 +31,10 @@
         <node name="camera_handler" pkg="robomaster_interface" type="camera_handler.py">
             <param name="robot_number" value="robot1"/>
         </node>     
+        <node name="lidar_handler" pkg="robomaster_interface" type="lidar_handler.py">
+            <param name="robot_number" value="robot1"/>
+            <param name="angle_window" value="5"/>
+        </node>
         
     </group>
 
