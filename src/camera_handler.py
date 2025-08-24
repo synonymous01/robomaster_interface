@@ -18,15 +18,16 @@ class getDepth:
     def __init__(self):
         self.robot_name = rospy.get_param('~robot_number')
         self.robo_pub = rospy.Publisher('/{}/enemy_angle'.format(self.robot_name), Float32, queue_size=5)
-        rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.detect_robot)
         self.detection_model = YOLO("/home/jetson/catkin_ws/src/robomaster_interface/src/best90.pt")
+        time.sleep(1)
+        rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.detect_robot)
     def detect_robot(self, data):
         array = ros_numpy.numpify(data)
         if self.robo_pub.get_num_connections():
             det_result = self.detection_model(array)
             
             print(f"{len(det_result[0])} robots detected!")
-            x, y, w, h = det_result.boxes.xywh[0]
+            x, y, w, h = det_result[0].boxes.xywh[0]
 
             midx = x + (w//2)
             midy = y + (h//2)
