@@ -17,7 +17,7 @@ ANGLE_PER_PIXEL = 0.0703125
 class getDepth:
     def __init__(self):
         self.robot_name = rospy.get_param('~robot_number')
-        self.robo_pub = rospy.Publisher('/{}/enemy_angle'.format(self.robot_name), Float32)
+        self.robo_pub = rospy.Publisher('/{}/enemy_angle'.format(self.robot_name), Float32, queue_size=5)
         rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.detect_robot)
         self.detection_model = YOLO("/home/jetson/catkin_ws/src/robomaster_interface/src/best90.pt")
     def detect_robot(self, data):
