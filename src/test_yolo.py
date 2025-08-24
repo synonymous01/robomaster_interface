@@ -19,7 +19,7 @@ def callback(data):
     to_pub.header.frame_id = 'map'
     det_image_pub.publish(to_pub)
 
-rospy.Subscriber("/camera_out/image", Image, callback)
+rospy.Subscriber("/camera/color/image_raw", Image, callback)
 
 while True:
     rospy.spin()
