@@ -19,7 +19,7 @@ class getDepth:
         self.robot_name = rospy.get_param('~robot_number')
         self.robo_pub = rospy.Publisher('/{}/enemy_angle'.format(self.robot_name), Float32)
         rospy.Subscriber('/{}/camera/color/image_raw'.format(self.robot_name), Image, self.detect_robot)
-        self.detection_model = YOLO("best90.pt")
+        self.detection_model = YOLO("/home/jetson/catkin_ws/src/robomaster_interface/src/best90.pt")
     def detect_robot(self, data):
         array = ros_numpy.numpify(data)
         if self.robo_pub.get_num_connections():

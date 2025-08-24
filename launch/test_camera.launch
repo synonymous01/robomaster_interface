@@ -27,6 +27,9 @@
             <param name="robot_number" value="robot1"/>
             <param name="initial_x" value="(arg initial_x)"/>
             <param name="initial_y" value="(arg initial_y)"/>
+            <param name="confidence_level" value="0.9"/>
+            <param name="magnitude_limit" value="0.2"/>
+            <param name="safety_radius" value="0.5"/>
         </node>
         <node name="camera_handler" pkg="robomaster_interface" type="camera_handler.py">
             <param name="robot_number" value="robot1"/>
