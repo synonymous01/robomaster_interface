@@ -27,6 +27,7 @@
             <param name="robot_number" value="robot1"/>
             <param name="initial_x" value="$(arg initial_x)"/>
             <param name="initial_y" value="$(arg initial_y)"/>
+            <param name="meter_per_sector_length" value="0.45"/>
             <param name="confidence_level" value="0.9"/>
             <param name="magnitude_limit" value="0.2"/>
             <param name="safety_radius" value="0.5"/>
