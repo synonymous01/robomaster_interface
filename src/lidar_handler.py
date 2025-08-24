@@ -39,19 +39,23 @@ class robot_publisher:
         br.sendTransform(t)
     
     def post_pose(self, angle_data):
+        rospy.logdebug_once("angle received")
         rads = angle_data.data
         if self.angle_inc is not None and self.angle_min is not None:
             index = int((rads - self.angle_min) / self.angle_inc)
+            rospy.logdebug("index becomes: {}".format(index))
             dist_window = self.scan_array[index - self.window:index + self.window]
             distance_found = min(dist_window)
             rads = -1 * rads
 
             if distance_found == 'inf':
                 self.sendingTransform(0,0)
+                rospy.logdebug("no distance found!")
             else:
                 y_displacement = distance_found * np.sin(rads)
                 x_displacement = distance_found * np.cos(rads)
 
+                rospy.logdebug("{} y, {} x found.".format(y_displacement, x_displacement))
                 self.sendingTransform(x_displacement, y_displacement)
 
 
