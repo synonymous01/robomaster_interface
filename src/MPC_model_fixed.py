@@ -1,4 +1,4 @@
-#!../venvs/robot_env/bin/python3.7
+#!/usr/bin/env python3
 from timeit import default_timer as timer
 import rospy
 import numpy as np
